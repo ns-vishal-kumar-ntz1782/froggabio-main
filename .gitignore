@@ -1,0 +1,65 @@
+# FroggaBio - Magento Open Source 2.4.9 (Composer-based project)
+#
+# Tracked: composer.json/lock, app/code, app/design (project themes), app/i18n,
+#          app/etc/config.php, small root files deployed by magento2-base.
+# Ignored: dependencies, generated/runtime files, local secrets, large folders
+#          that `composer install` re-creates from magento/magento2-base.
+
+# --- Secrets & local environment (NEVER commit) ---
+/app/etc/env.php
+/auth.json
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.crt
+
+# --- Composer dependencies (restored by `composer install` from composer.lock) ---
+/vendor/
+
+# --- Generated / runtime ---
+/generated/*
+!/generated/.htaccess
+/var/*
+!/var/.htaccess
+/pub/static/*
+!/pub/static/.htaccess
+/pub/media/*
+!/pub/media/.htaccess
+/pub/media/catalog/
+/pub/media/customer/
+/pub/media/downloadable/
+/pub/media/import/
+/pub/media/tmp/
+
+# --- Large folders re-deployed by magento/magento2-base on `composer install` ---
+/lib/
+/setup/
+/dev/
+/phpserver/
+/app/design/frontend/Magento/
+/app/design/adminhtml/Magento/
+
+# --- Database dumps / backups ---
+*.sql
+*.sql.gz
+*.sql.zip
+/backups/
+
+# --- Frontend build artefacts ---
+node_modules/
+/package.json
+/package-lock.json
+/Gruntfile.js
+/grunt-config.json
+
+# --- IDE / OS / tooling ---
+/.idea/
+/.vscode/
+*.swp
+*~
+.DS_Store
+Thumbs.db
+.php-cs-fixer.cache
+.phpunit.result.cache
