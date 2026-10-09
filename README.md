@@ -12,7 +12,8 @@ only project source and the lock file live in Git.
 | MariaDB | 10.11 (also accepted: 11.4, 11.8, 12.2–12.3, MySQL 8.0/8.4) | |
 | OpenSearch | 2.x / 3.x | **Mandatory** — Magento 2.4.9 has no MySQL search |
 | Web server | Apache 2.4 (`rewrite`, `headers`, `expires`, `ssl`) or nginx | Document root must be `pub/` |
-| Node.js | 18+ | Only needed for Hyvä/Tailwind builds |
+| Node.js | 20+ (24 used locally) | Needed to build the Hyvä Tailwind CSS |
+| Hyvä Theme | 1.5.2 (`hyva-themes/magento2-default-theme`) | Free/open-source; needs a free Hyvä Packagist key |
 
 Redis/Valkey and RabbitMQ are optional; this setup uses file cache and DB sessions.
 
@@ -24,12 +25,19 @@ Get access keys from <https://commercemarketplace.adobe.com> → *My Profile →
 composer config --global http-basic.repo.magento.com <PUBLIC_KEY> <PRIVATE_KEY>
 ```
 
+Hyvä packages come from Hyvä's Private Packagist (the repository URL is already in `composer.json`).
+Each developer needs their own free key from <https://hyva.io> → *My Account → License Keys*:
+
+```bash
+composer config --global --auth http-basic.hyva-themes.repo.packagist.com token <HYVA_KEY>
+```
+
 Keys are stored in `~/.config/composer/auth.json`. **Never** add an `auth.json` to this repo.
 
 ## 3. Clone and install dependencies
 
 ```bash
-git clone git@github.com:<org-or-user>/froggabio-magento.git
+git clone git@github.com:ns-vishal-kumar-ntz1782/froggabio-magento.git
 cd froggabio-magento
 composer install          # restores vendor/ + Magento base files from composer.lock
 ```
@@ -89,7 +97,42 @@ for d in var generated pub/static pub/media; do
 done
 ```
 
-## 8. Everyday Magento commands
+## 8. Hyvä Theme
+
+Installed packages: `hyva-themes/magento2-default-theme` 1.5.2 plus its dependencies
+(`magento2-theme-module`, `base-layout-reset`, `email-module`, `graphql-tokens`, `graphql-view-model`,
+`order-cancellation-webapi`, `compat-module-fallback`, `mollie-theme-bundle`, Magewire, Mollie).
+Hyvä **UI** (paid component library) is *not* installed yet.
+
+Project theme: **`app/design/frontend/FroggaBio/default`** — a child of `Hyva/default`. Put all
+storefront customisations here; never edit `vendor/hyva-themes/*`.
+
+Hyvä-required settings (captcha off, JS/CSS/HTML merge/minify/bundling off) are locked in
+`app/etc/config.php`, so they apply automatically after `setup:upgrade`.
+
+After `setup:install` on a new machine, assign the theme at **website** level (the theme ID is
+created locally, so it is not committed):
+
+Admin → *Content → Design → Configuration* → **Main Website** → Applied Theme: *FroggaBio Default*, or:
+
+```bash
+# <ID> = theme_id of FroggaBio/default (phpMyAdmin: table `theme`)
+php bin/magento config:set --scope=websites --scope-code=base design/theme/theme_id <ID>
+php bin/magento indexer:reindex design_config_grid && php bin/magento cache:flush
+```
+
+Build the Tailwind CSS (output: `web/css/styles.css`, which is committed):
+
+```bash
+cd app/design/frontend/FroggaBio/default/web/tailwind
+npm ci
+npm run build      # production build
+npm run watch      # while developing templates
+```
+
+Re-run `npm run build` and commit `web/css/styles.css` whenever you change templates or Tailwind classes.
+
+## 9. Everyday Magento commands
 
 ```bash
 php bin/magento --version
@@ -102,7 +145,7 @@ php bin/magento setup:static-content:deploy -f en_CA en_US   # only needed outsi
 php bin/magento cron:install                  # indexers run "Update on Schedule" and need cron
 ```
 
-## 9. Tests
+## 10. Tests
 
 Keep tests inside each module: `app/code/<Vendor>/<Module>/Test/Unit`. Run with:
 
@@ -113,7 +156,7 @@ vendor/bin/phpcs --standard=Magento2 app/code app/design
 
 (`dev/` is restored by `composer install`, so it is not committed.)
 
-## 10. Git workflow (multiple developers)
+## 11. Git workflow (multiple developers)
 
 - `main` is the stable branch. Do not commit directly to it and **never force-push** it.
 - Work on a feature branch: `git switch -c feature/<ticket>-<short-name>`.
@@ -126,7 +169,7 @@ vendor/bin/phpcs --standard=Magento2 app/code app/design
 - Never edit `vendor/` or Magento core files. Use modules (`app/code`), theme overrides (`app/design`),
   plugins/preferences, or Composer patches (`cweagans/composer-patches`, stored in `patches/`).
 
-## 11. Database, migrations and media
+## 12. Database, migrations and media
 
 - Git is **not** a database backup. Never commit SQL dumps (they are git-ignored).
 - Schema/data changes are delivered as code: declarative schema (`etc/db_schema.xml`) and data/schema
@@ -137,7 +180,7 @@ vendor/bin/phpcs --standard=Magento2 app/code app/design
 - Media (`pub/media`) is not in Git; share reviewed assets separately.
 - Local DB backup: `mysqldump -u<user> -p froggabio_magento | gzip > ~/backups/froggabio_$(date +%F).sql.gz`
 
-## 12. Troubleshooting
+## 13. Troubleshooting
 
 | Symptom | Fix |
 |---|---|
@@ -145,4 +188,6 @@ vendor/bin/phpcs --standard=Magento2 app/code app/design
 | Storefront without CSS | `php bin/magento cache:flush`; ensure Apache can write to `pub/static` |
 | Permission denied in `var/` or `generated/` | Re-run the `setfacl` loop in section 7 |
 | Changes in admin not visible | Make sure cron is installed (`bin/magento cron:install`) or run `bin/magento indexer:reindex` |
-| `composer install` fails with 401 | Magento access keys missing — see section 2 |
+| `composer install` fails with 401 | Magento or Hyvä access key missing — see section 2 |
+| Old theme (Luma) still shown after switching theme, even after `cache:flush` | Stale full-page cache entry: `rm -rf var/page_cache/*` then reload (seen once on 2.4.9 right after install) |
+| Hyvä page looks unstyled | `cd app/design/frontend/FroggaBio/default/web/tailwind && npm ci && npm run build`, then `cache:flush` |

@@ -18,10 +18,11 @@
     },
     "version": "2.4.9",
     "require": {
-        "magento/product-community-edition": "2.4.9",
+        "hyva-themes/magento2-default-theme": "^1.5.2",
+        "magento/composer": "^1.10.1-beta1",
         "magento/composer-dependency-version-audit-plugin": "~0.1",
         "magento/composer-root-update-plugin": "^2.0.4",
-        "magento/composer": "^1.10.1-beta1"
+        "magento/product-community-edition": "2.4.9"
     },
     "autoload": {
         "exclude-from-classmap": [
@@ -75,6 +76,11 @@
     "prefer-stable": true,
     "repositories": [
         {
+            "name": "private-packagist",
+            "type": "composer",
+            "url": "https://hyva-themes.repo.packagist.com/envisionecomme-2hfp7/"
+        },
+        {
             "type": "composer",
             "url": "https://repo.magento.com/"
         }
@@ -83,4 +89,3 @@
         "magento-force": "override"
     }
 }
-
