@@ -360,6 +360,17 @@ return [
         'Magento_Wishlist' => 1,
         'Magento_WishlistAnalytics' => 1,
         'Magento_WishlistGraphQl' => 1,
+        'Hyva_Theme' => 1,
+        'Hyva_CompatModuleFallback' => 1,
+        'Hyva_Email' => 1,
+        'Hyva_GraphqlTokens' => 1,
+        'Hyva_GraphqlViewModel' => 1,
+        'Hyva_MollieThemeBundle' => 1,
+        'Hyva_OrderCancellationWebapi' => 1,
+        'Hyva_BaseLayoutReset' => 1,
+        'Magewirephp_Magewire' => 1,
+        'Mollie_Payment' => 1,
+        'Mollie_HyvaCompatibility' => 1,
         'PayPal_Braintree' => 1,
         'PayPal_BraintreeCustomerBalance' => 1,
         'PayPal_BraintreeGiftCard' => 1,
@@ -367,5 +378,29 @@ return [
         'PayPal_BraintreeGiftWrapping' => 1,
         'PayPal_BraintreeGraphQl' => 1,
         'PayPal_BraintreeReward' => 1
+    ],
+    'system' => [
+        'default' => [
+            'customer' => [
+                'captcha' => [
+                    'enable' => '0'
+                ]
+            ],
+            'dev' => [
+                'template' => [
+                    'minify_html' => '0'
+                ],
+                'js' => [
+                    'merge_files' => '0',
+                    'enable_js_bundling' => '0',
+                    'minify_files' => '0',
+                    'move_script_to_bottom' => '0'
+                ],
+                'css' => [
+                    'merge_css_files' => '0',
+                    'minify_files' => '0'
+                ]
+            ]
+        ]
     ]
 ];

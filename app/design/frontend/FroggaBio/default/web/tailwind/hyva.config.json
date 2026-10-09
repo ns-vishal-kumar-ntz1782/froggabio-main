@@ -1,0 +1,24 @@
+{
+    "notice": [
+        "This is a complementary config file for Tailwind v4 and is not a replacement for the Tailwind v3 config file.",
+        "For usage, see the docs: https://docs.hyva.io/hyva-themes/working-with-tailwindcss/using-hyva-modules/"
+    ],
+    "tailwind": {
+        "include": [
+            {
+                "src": "vendor/hyva-themes/magento2-default-theme"
+            }
+        ],
+        "exclude": []
+    },
+    "tokens": {
+        "values": {
+            "color": {
+                "primary": "oklch(46% 0.2 265)",
+                "secondary": "oklch(53% 0.15 150)",
+                "on-primary": "#fff",
+                "on-secondary": "#fff"
+            }
+        }
+    }
+}

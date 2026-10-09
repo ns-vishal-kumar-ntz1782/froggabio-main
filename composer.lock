@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "050a16c7fb07758cf7d97e0229598552",
+    "content-hash": "d8cc2ac3af37d3b6237a6ddc07409d4e",
     "packages": [
         {
             "name": "2tvenom/cborencode",
@@ -2574,6 +2574,451 @@
                 }
             ],
             "time": "2026-08-24T09:13:11+00:00"
+        },
+        {
+            "name": "hyva-themes/magento2-base-layout-reset",
+            "version": "2.0.5",
+            "dist": {
+                "type": "zip",
+                "url": "https://hyva-themes.repo.packagist.com/envisionecomme-2hfp7/dists/hyva-themes/magento2-base-layout-reset/2.0.5.0/f39cf05a0e69c4ece318703c567a91d585ad89f7.zip",
+                "reference": "f39cf05a0e69c4ece318703c567a91d585ad89f7",
+                "mirrors": [
+                    {
+                        "url": "https://hyva-themes.repo.packagist.com/envisionecomme-2hfp7/dists/%package%/%version%/r%reference%.%type%",
+                        "preferred": true
+                    }
+                ]
+            },
+            "require": {
+                "ext-dom": "*",
+                "ext-libxml": "*",
+                "ext-simplexml": "*",
+                "hyva-themes/magento2-theme-module": ">1.3.17",
+                "magento/framework": "*",
+                "magento/module-theme": ">=1.0.2",
+                "php": ">=7.4.0",
+                "psr/log": "^1 || ^2 || ^3"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "src/registration.php"
+                ],
+                "psr-4": {
+                    "Hyva\\BaseLayoutReset\\": [
+                        "src/"
+                    ]
+                }
+            },
+            "notification-url": "https://hyva-themes.repo.packagist.com/envisionecomme-2hfp7/downloads/",
+            "license": [
+                "OSL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "Hyvä Themes B.V.",
+                    "email": "info@hyva.io"
+                }
+            ],
+            "description": "Hyva Themes Magento base layout reset generation",
+            "support": {
+                "source": "https://gitlab.hyva.io/hyva-themes/magento2-base-layout-reset/-/tree/2.0.5",
+                "issues": "https://gitlab.hyva.io/hyva-themes/magento2-base-layout-reset/-/issues"
+            },
+            "time": "2026-06-08T16:59:52+02:00"
+        },
+        {
+            "name": "hyva-themes/magento2-compat-module-fallback",
+            "version": "1.1.4",
+            "dist": {
+                "type": "zip",
+                "url": "https://hyva-themes.repo.packagist.com/envisionecomme-2hfp7/dists/hyva-themes/magento2-compat-module-fallback/1.1.4.0/a0bf18f998ccf45c53d15c39446a495aa68b4c4a.zip",
+                "reference": "a0bf18f998ccf45c53d15c39446a495aa68b4c4a",
+                "mirrors": [
+                    {
+                        "url": "https://hyva-themes.repo.packagist.com/envisionecomme-2hfp7/dists/%package%/%version%/r%reference%.%type%",
+                        "preferred": true
+                    }
+                ]
+            },
+            "require": {
+                "hyva-themes/magento2-theme-module": "*",
+                "magento/framework": "*"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "src/registration.php"
+                ],
+                "psr-4": {
+                    "Hyva\\CompatModuleFallback\\": "src/"
+                }
+            },
+            "notification-url": "https://hyva-themes.repo.packagist.com/envisionecomme-2hfp7/downloads/",
+            "license": [
+                "OSL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "Hyvä Themes B.V.",
+                    "email": "info@hyva.io"
+                }
+            ],
+            "description": "Allow templates to be overridden by Hyvä Themes compatibility modules without layout XML.",
+            "support": {
+                "source": "https://gitlab.hyva.io/hyva-themes/magento2-compat-module-fallback/-/tree/1.1.4",
+                "issues": "https://gitlab.hyva.io/hyva-themes/magento2-compat-module-fallback/-/issues"
+            },
+            "time": "2025-11-04T16:42:50+01:00"
+        },
+        {
+            "name": "hyva-themes/magento2-default-theme",
+            "version": "1.5.2",
+            "dist": {
+                "type": "zip",
+                "url": "https://hyva-themes.repo.packagist.com/envisionecomme-2hfp7/dists/hyva-themes/magento2-default-theme/1.5.2.0/c9af094ae5efffae92504e0d8e60e993f379c399.zip",
+                "reference": "c9af094ae5efffae92504e0d8e60e993f379c399",
+                "mirrors": [
+                    {
+                        "url": "https://hyva-themes.repo.packagist.com/envisionecomme-2hfp7/dists/%package%/%version%/r%reference%.%type%",
+                        "preferred": true
+                    }
+                ]
+            },
+            "require": {
+                "hyva-themes/magento2-base-layout-reset": "^2.0.1",
+                "hyva-themes/magento2-email-module": "*",
+                "hyva-themes/magento2-graphql-tokens": "*",
+                "hyva-themes/magento2-graphql-view-model": ">=1.0.1",
+                "hyva-themes/magento2-order-cancellation-webapi": "^1.0.0",
+                "hyva-themes/magento2-theme-module": ">=1.5.2",
+                "magento/framework": ">=102.0.0",
+                "magento/module-catalog-rule-graph-ql": "*",
+                "magento/module-customer-graph-ql": "*",
+                "magento/module-directory-graph-ql": "*",
+                "magento/module-graph-ql": "*",
+                "magento/module-quote-graph-ql": "*",
+                "php": ">=7.3.0"
+            },
+            "require-dev": {
+                "dealerdirect/phpcodesniffer-composer-installer": "dev-master",
+                "magento/magento-coding-standard": "dev-master",
+                "phpro/grumphp": "dev-master"
+            },
+            "type": "magento2-theme",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ]
+            },
+            "notification-url": "https://hyva-themes.repo.packagist.com/envisionecomme-2hfp7/downloads/",
+            "archive": {
+                "exclude": [
+                    ".gitlab"
+                ]
+            },
+            "license": [
+                "OSL-3.0",
+                "AFL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "Hyvä Themes B.V.",
+                    "email": "info@hyva.io"
+                }
+            ],
+            "description": "Default Hyvä Theme",
+            "support": {
+                "source": "https://gitlab.hyva.io/hyva-themes/magento2-default-theme/-/tree/1.5.2",
+                "issues": "https://gitlab.hyva.io/hyva-themes/magento2-default-theme/-/issues"
+            },
+            "time": "2026-07-10T14:53:01+02:00"
+        },
+        {
+            "name": "hyva-themes/magento2-email-module",
+            "version": "1.0.6",
+            "dist": {
+                "type": "zip",
+                "url": "https://hyva-themes.repo.packagist.com/envisionecomme-2hfp7/dists/hyva-themes/magento2-email-module/1.0.6.0/aa5dc55e5e66cadf578bdb339a5d76b2a5a94097.zip",
+                "reference": "aa5dc55e5e66cadf578bdb339a5d76b2a5a94097",
+                "mirrors": [
+                    {
+                        "url": "https://hyva-themes.repo.packagist.com/envisionecomme-2hfp7/dists/%package%/%version%/r%reference%.%type%",
+                        "preferred": true
+                    }
+                ]
+            },
+            "require": {
+                "magento/framework": "*",
+                "magento/module-email": ">=101.0.0"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "src/registration.php"
+                ],
+                "psr-4": {
+                    "Hyva\\Email\\": "src/"
+                }
+            },
+            "notification-url": "https://hyva-themes.repo.packagist.com/envisionecomme-2hfp7/downloads/",
+            "license": [
+                "OSL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "Hyvä Themes B.V.",
+                    "email": "info@hyva.io"
+                }
+            ],
+            "description": "Hyva Themes email module",
+            "support": {
+                "source": "https://gitlab.hyva.io/hyva-themes/magento2-email-module/-/tree/1.0.6",
+                "issues": "https://gitlab.hyva.io/hyva-themes/magento2-email-module/-/issues"
+            },
+            "time": "2025-11-09T21:32:06+01:00"
+        },
+        {
+            "name": "hyva-themes/magento2-graphql-tokens",
+            "version": "1.0.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/hyva-themes/magento2-graphql-tokens.git",
+                "reference": "90134c74388b0f5635d322b70a79fcf97716900e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/hyva-themes/magento2-graphql-tokens/zipball/90134c74388b0f5635d322b70a79fcf97716900e",
+                "reference": "90134c74388b0f5635d322b70a79fcf97716900e",
+                "shasum": ""
+            },
+            "require": {
+                "magento/framework": "*",
+                "magento/module-catalog": ">=103.0.0",
+                "magento/module-checkout": ">=100.3.0",
+                "magento/module-customer": ">=102.0.0"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "src/registration.php"
+                ],
+                "psr-4": {
+                    "Hyva\\GraphqlTokens\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Hyvä Themes BV",
+                    "email": "info@hyva.io"
+                }
+            ],
+            "description": "Adds Customer and Cart tokens to CustomerData sections",
+            "support": {
+                "issues": "https://github.com/hyva-themes/magento2-graphql-tokens/issues",
+                "source": "https://github.com/hyva-themes/magento2-graphql-tokens/tree/1.0.4"
+            },
+            "time": "2021-08-23T10:19:57+00:00"
+        },
+        {
+            "name": "hyva-themes/magento2-graphql-view-model",
+            "version": "1.0.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/hyva-themes/magento2-graphql-view-model.git",
+                "reference": "4bdb5b5642dfcfb538d60bfac0029cd07714fe17"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/hyva-themes/magento2-graphql-view-model/zipball/4bdb5b5642dfcfb538d60bfac0029cd07714fe17",
+                "reference": "4bdb5b5642dfcfb538d60bfac0029cd07714fe17",
+                "shasum": ""
+            },
+            "require": {
+                "magento/framework": "^101.0.0 || ^102.0.0 || ^103.0.0",
+                "php": ">=7.3.0",
+                "webonyx/graphql-php": "^14.0.0 || ^15.0.0"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "src/registration.php"
+                ],
+                "psr-4": {
+                    "Hyva\\GraphqlViewModel\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "Provide ability to customize GraphQL queries and mutations for Hyvä themes.",
+            "support": {
+                "issues": "https://github.com/hyva-themes/magento2-graphql-view-model/issues",
+                "source": "https://github.com/hyva-themes/magento2-graphql-view-model/tree/1.0.5"
+            },
+            "time": "2023-03-13T17:01:18+00:00"
+        },
+        {
+            "name": "hyva-themes/magento2-mollie-theme-bundle",
+            "version": "1.1.0",
+            "dist": {
+                "type": "zip",
+                "url": "https://hyva-themes.repo.packagist.com/envisionecomme-2hfp7/dists/hyva-themes/magento2-mollie-theme-bundle/1.1.0.0/cee7ff401bae129b543dbe454b9869dfb580863e.zip",
+                "reference": "cee7ff401bae129b543dbe454b9869dfb580863e",
+                "mirrors": [
+                    {
+                        "url": "https://hyva-themes.repo.packagist.com/envisionecomme-2hfp7/dists/%package%/%version%/r%reference%.%type%",
+                        "preferred": true
+                    }
+                ]
+            },
+            "require": {
+                "mollie/magento2-hyva-compatibility": "^3.0"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "src/registration.php"
+                ],
+                "psr-4": {
+                    "Hyva\\MollieThemeBundle\\": [
+                        "src/"
+                    ]
+                }
+            },
+            "notification-url": "https://hyva-themes.repo.packagist.com/envisionecomme-2hfp7/downloads/",
+            "license": [
+                "OSL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "Hyvä Themes B.V.",
+                    "email": "info@hyva.io"
+                }
+            ],
+            "description": "Hyva Themes Mollie companion module",
+            "support": {
+                "source": "https://gitlab.hyva.io/hyva-themes/hyva-compat/magento2-mollie-theme-bundle/-/tree/1.1.0",
+                "issues": "https://gitlab.hyva.io/hyva-themes/hyva-compat/magento2-mollie-theme-bundle/-/issues"
+            },
+            "time": "2026-06-16T14:56:48+00:00"
+        },
+        {
+            "name": "hyva-themes/magento2-order-cancellation-webapi",
+            "version": "1.0.1",
+            "dist": {
+                "type": "zip",
+                "url": "https://hyva-themes.repo.packagist.com/envisionecomme-2hfp7/dists/hyva-themes/magento2-order-cancellation-webapi/1.0.1.0/e3b2e4d74bc2501c926ce5b8f9ac126f523bd07e.zip",
+                "reference": "e3b2e4d74bc2501c926ce5b8f9ac126f523bd07e",
+                "mirrors": [
+                    {
+                        "url": "https://hyva-themes.repo.packagist.com/envisionecomme-2hfp7/dists/%package%/%version%/r%reference%.%type%",
+                        "preferred": true
+                    }
+                ]
+            },
+            "require": {
+                "magento/framework": "*",
+                "magento/module-customer": "*",
+                "magento/module-sales": "*",
+                "magento/module-webapi": "*"
+            },
+            "suggest": {
+                "magento/module-order-cancellation": "^100.4.0-beta3"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "src/registration.php"
+                ],
+                "psr-4": {
+                    "Hyva\\OrderCancellationWebapi\\": [
+                        "src/"
+                    ]
+                }
+            },
+            "notification-url": "https://hyva-themes.repo.packagist.com/envisionecomme-2hfp7/downloads/",
+            "license": [
+                "OSL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "Hyvä Themes B.V.",
+                    "email": "info@hyva.io"
+                }
+            ],
+            "description": "REST API for magento/module-order-cancellation.",
+            "support": {
+                "source": "https://gitlab.hyva.io/hyva-themes/magento2-order-cancellation-webapi/-/tree/1.0.1",
+                "issues": "https://gitlab.hyva.io/hyva-themes/magento2-order-cancellation-webapi/-/issues"
+            },
+            "time": "2025-11-04T17:06:08+01:00"
+        },
+        {
+            "name": "hyva-themes/magento2-theme-module",
+            "version": "1.5.2",
+            "dist": {
+                "type": "zip",
+                "url": "https://hyva-themes.repo.packagist.com/envisionecomme-2hfp7/dists/hyva-themes/magento2-theme-module/1.5.2.0/6f602cce4248cc626be0f50076188200e3e5d7d5.zip",
+                "reference": "6f602cce4248cc626be0f50076188200e3e5d7d5",
+                "mirrors": [
+                    {
+                        "url": "https://hyva-themes.repo.packagist.com/envisionecomme-2hfp7/dists/%package%/%version%/r%reference%.%type%",
+                        "preferred": true
+                    }
+                ]
+            },
+            "require": {
+                "ext-simplexml": "*",
+                "hyva-themes/magento2-mollie-theme-bundle": "^1.0.1",
+                "magento/framework": "*",
+                "magento/module-catalog": ">=103.0.0",
+                "magento/module-checkout": ">=100.3.0",
+                "magento/module-cms": ">=103.0.0",
+                "magento/module-customer": ">=102.0.0",
+                "magento/module-quote-graph-ql": "*",
+                "magento/module-sample-data": "*",
+                "magento/module-theme": ">=101.0.0",
+                "magento/module-wishlist": ">=101.0.0"
+            },
+            "require-dev": {
+                "hyva-themes/magento2-default-theme": "*",
+                "tddwizard/magento2-fixtures": "^1.0"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "src/cli_commands.php",
+                    "src/registration.php"
+                ],
+                "psr-4": {
+                    "Hyva\\Theme\\": [
+                        "src/",
+                        "tests/src/"
+                    ]
+                }
+            },
+            "notification-url": "https://hyva-themes.repo.packagist.com/envisionecomme-2hfp7/downloads/",
+            "license": [
+                "OSL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "Hyvä Themes B.V.",
+                    "email": "info@hyva.io"
+                }
+            ],
+            "description": "Hyva Themes companion module",
+            "support": {
+                "source": "https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/tree/1.5.2",
+                "issues": "https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues"
+            },
+            "time": "2026-07-10T14:46:41+02:00"
         },
         {
             "name": "justinrainbow/json-schema",
@@ -18662,6 +19107,100 @@
             "time": "2026-08-03T08:38:57+00:00"
         },
         {
+            "name": "magewirephp/magewire",
+            "version": "1.13.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/magewirephp/magewire.git",
+                "reference": "dc1c62b2300677ebded6160da423d59f8f806b93"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/magewirephp/magewire/zipball/dc1c62b2300677ebded6160da423d59f8f806b93",
+                "reference": "dc1c62b2300677ebded6160da423d59f8f806b93",
+                "shasum": ""
+            },
+            "require": {
+                "magento/framework": "*",
+                "magewirephp/validation": "^1.0",
+                "php": ">=8.1",
+                "symfony/http-foundation": "^5.4 || ^6.0 || ^7.0 || ^8.0"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "src/registration.php"
+                ],
+                "psr-4": {
+                    "Magewirephp\\Magewire\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Willem Poortman",
+                    "role": "Founder / Developer"
+                }
+            ],
+            "description": "A framework that makes building dynamic interfaces simple, without leaving the comfort of Magento 2",
+            "support": {
+                "issues": "https://github.com/magewirephp/magewire/discussions",
+                "source": "https://github.com/magewirephp/magewire/tree/1.13.3"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/wpoortman",
+                    "type": "github"
+                }
+            ],
+            "time": "2026-01-09T13:27:17+00:00"
+        },
+        {
+            "name": "magewirephp/validation",
+            "version": "1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/magewirephp/validation.git",
+                "reference": "4d3728165a2618b02a449576ee9d13497e942c5b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/magewirephp/validation/zipball/4d3728165a2618b02a449576ee9d13497e942c5b",
+                "reference": "4d3728165a2618b02a449576ee9d13497e942c5b",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mbstring": "*",
+                "php": ">=8.1 <8.6"
+            },
+            "replace": {
+                "rakit/validation": "*"
+            },
+            "require-dev": {
+                "php-coveralls/php-coveralls": "^2.2",
+                "phpunit/phpunit": "^9.5 || ^10.0",
+                "squizlabs/php_codesniffer": "^3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Rakit\\Validation\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "PHP Laravel like standalone validation library (forked from rakit/validation)",
+            "support": {
+                "source": "https://github.com/magewirephp/validation/tree/1.0.1"
+            },
+            "time": "2026-05-12T10:23:15+00:00"
+        },
+        {
             "name": "marc-mabe/php-enum",
             "version": "v4.7.2",
             "source": {
@@ -18733,6 +19272,269 @@
                 "source": "https://github.com/marc-mabe/php-enum/tree/v4.7.2"
             },
             "time": "2025-09-14T11:18:39+00:00"
+        },
+        {
+            "name": "mollie/magento2",
+            "version": "3.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mollie/magento2.git",
+                "reference": "d7d9b76ed5707763c1be6ea5275a5cfb63d35820"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mollie/magento2/zipball/d7d9b76ed5707763c1be6ea5275a5cfb63d35820",
+                "reference": "d7d9b76ed5707763c1be6ea5275a5cfb63d35820",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "magento/framework": ">=103.0.5",
+                "magento/module-backend": ">=100.3.3",
+                "magento/module-catalog": ">=100.3.3",
+                "magento/module-checkout": ">=100.3.3",
+                "magento/module-config": ">=100.3.3",
+                "magento/module-customer": ">=100.3.3",
+                "magento/module-eav": ">=100.3.3",
+                "magento/module-payment": ">=100.3.3",
+                "magento/module-quote": ">=100.3.3",
+                "magento/module-sales": ">=100.3.3",
+                "magento/module-sales-rule": ">=100.3.3",
+                "magento/module-store": ">=100.3.3",
+                "magento/module-tax": ">=100.3.3",
+                "magento/module-ui": ">=100.3.3",
+                "mollie/mollie-api-php": "^3.3",
+                "php": ">=8.1"
+            },
+            "replace": {
+                "mollie/magento2-analytics": "*"
+            },
+            "suggest": {
+                "mollie/magento2-hyva-checkout": "Hyvä Checkout integration for Mollie Payments",
+                "mollie/magento2-hyva-compatibility": "Hyvä compatibility for Mollie Payments",
+                "mollie/magento2-hyva-react-checkout": "Hyvä React Checkout integration for Mollie Payments",
+                "mollie/magento2-multishipping": "Multishipping integration for Mollie Payments",
+                "mollie/magento2-scandipwa": "ScandiPWA integration for Mollie Payments",
+                "mollie/magento2-subscriptions": "Subscriptions integration for Mollie Payments"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php",
+                    "GraphQL/Replaces/AdditionalDataProviderInterface.php",
+                    "Service/storeid.php"
+                ],
+                "psr-4": {
+                    "Mollie\\Payment\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "OSL-3.0",
+                "AFL-3.0"
+            ],
+            "description": "Mollie Payment Module for Magento 2",
+            "keywords": [
+                "Apple Pay",
+                "Billink",
+                "CBC",
+                "Przelewy24",
+                "alma",
+                "api",
+                "bancomat",
+                "bancomat pay",
+                "bancontact",
+                "banktransfer",
+                "belfius",
+                "belfius direct net",
+                "billie",
+                "bizum",
+                "blik",
+                "charges",
+                "creditcard",
+                "direct debit",
+                "directdebit",
+                "fashioncheque",
+                "gateway",
+                "gift cards",
+                "ideal",
+                "intersolve",
+                "kbc",
+                "klarna",
+                "magento 2",
+                "magento2",
+                "mb way",
+                "mistercash",
+                "mollie",
+                "multibanco",
+                "mybank",
+                "pay by bank",
+                "paylater",
+                "payment",
+                "payments",
+                "paypal",
+                "paysafecard",
+                "podiumcadeaukaart",
+                "point of sale",
+                "pos",
+                "recurring",
+                "refunds",
+                "riverty",
+                "satispay",
+                "sepa",
+                "service",
+                "sliceit",
+                "sofort",
+                "sofortbanking",
+                "subscriptions",
+                "swish",
+                "twint",
+                "vipps",
+                "voucher",
+                "wero"
+            ],
+            "support": {
+                "issues": "https://github.com/mollie/magento2/issues",
+                "source": "https://github.com/mollie/magento2/tree/v3.2.0"
+            },
+            "time": "2026-10-06T12:57:12+00:00"
+        },
+        {
+            "name": "mollie/magento2-hyva-compatibility",
+            "version": "v3.1.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mollie/magento2-hyva-compatibility.git",
+                "reference": "886c068dc915ad7041d53448eed28c6ca2e2286f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mollie/magento2-hyva-compatibility/zipball/886c068dc915ad7041d53448eed28c6ca2e2286f",
+                "reference": "886c068dc915ad7041d53448eed28c6ca2e2286f",
+                "shasum": ""
+            },
+            "require": {
+                "hyva-themes/magento2-compat-module-fallback": "*",
+                "magento/framework": "*",
+                "magewirephp/magewire": "^1.13.3",
+                "mollie/magento2": "^3.0.0"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "src/registration.php"
+                ],
+                "psr-4": {
+                    "Mollie\\HyvaCompatibility\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "OSL-3.0",
+                "AFL-3.0"
+            ],
+            "description": "Hyvä Themes Compatibility module for Mollie Payments",
+            "support": {
+                "issues": "https://github.com/mollie/magento2-hyva-compatibility/issues",
+                "source": "https://github.com/mollie/magento2-hyva-compatibility/tree/v3.1.2"
+            },
+            "time": "2026-08-26T07:40:00+00:00"
+        },
+        {
+            "name": "mollie/mollie-api-php",
+            "version": "v3.15.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mollie/mollie-api-php.git",
+                "reference": "da124bd13b9a2f30e38d944e2db4f8fe0da3fcbb"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mollie/mollie-api-php/zipball/da124bd13b9a2f30e38d944e2db4f8fe0da3fcbb",
+                "reference": "da124bd13b9a2f30e38d944e2db4f8fe0da3fcbb",
+                "shasum": ""
+            },
+            "require": {
+                "composer/ca-bundle": "^1.4",
+                "ext-curl": "*",
+                "ext-json": "*",
+                "ext-openssl": "*",
+                "nyholm/psr7": "^1.8",
+                "php": "^7.4|^8.0",
+                "psr/http-client": "^1.0",
+                "psr/http-factory": "^1.1",
+                "psr/http-message": "^1.1|^2.0"
+            },
+            "require-dev": {
+                "brianium/paratest": "^6.11",
+                "guzzlehttp/guzzle": "^7.6",
+                "phpstan/phpstan": "^2.0",
+                "phpunit/phpunit": "^9.6",
+                "symfony/var-dumper": "^5.4|^6.4|^7.2"
+            },
+            "suggest": {
+                "mollie/oauth2-mollie-php": "Use OAuth to authenticate with the Mollie API. This is needed for some endpoints. Visit https://docs.mollie.com/ for more information."
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Mollie\\Api\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-2-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Mollie B.V.",
+                    "email": "info@mollie.com"
+                }
+            ],
+            "description": "Mollie API client library for PHP. Mollie is a European Payment Service provider and offers international payment methods such as Mastercard, VISA, American Express and PayPal, and local payment methods such as iDEAL, Bancontact, SOFORT Banking, SEPA direct debit, Belfius Direct Net, KBC Payment Button and various gift cards such as Podiumcadeaukaart and fashioncheque.",
+            "homepage": "https://www.mollie.com/en/developers",
+            "keywords": [
+                "Apple Pay",
+                "CBC",
+                "Przelewy24",
+                "api",
+                "bancontact",
+                "banktransfer",
+                "belfius",
+                "belfius direct net",
+                "charges",
+                "creditcard",
+                "direct debit",
+                "fashioncheque",
+                "gateway",
+                "gift cards",
+                "ideal",
+                "inghomepay",
+                "intersolve",
+                "kbc",
+                "klarna",
+                "mistercash",
+                "mollie",
+                "paylater",
+                "payment",
+                "payments",
+                "paypal",
+                "paysafecard",
+                "podiumcadeaukaart",
+                "recurring",
+                "refunds",
+                "sepa",
+                "service",
+                "sliceit",
+                "sofort",
+                "sofortbanking",
+                "subscriptions"
+            ],
+            "support": {
+                "issues": "https://github.com/mollie/mollie-api-php/issues",
+                "source": "https://github.com/mollie/mollie-api-php/tree/v3.15.0"
+            },
+            "time": "2026-09-23T13:33:07+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -18961,6 +19763,84 @@
                 "source": "https://github.com/nikic/PHP-Parser/tree/v5.9.0"
             },
             "time": "2026-09-13T18:51:52+00:00"
+        },
+        {
+            "name": "nyholm/psr7",
+            "version": "1.8.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Nyholm/psr7.git",
+                "reference": "a71f2b11690f4b24d099d6b16690a90ae14fc6f3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Nyholm/psr7/zipball/a71f2b11690f4b24d099d6b16690a90ae14fc6f3",
+                "reference": "a71f2b11690f4b24d099d6b16690a90ae14fc6f3",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.2",
+                "psr/http-factory": "^1.0",
+                "psr/http-message": "^1.1 || ^2.0"
+            },
+            "provide": {
+                "php-http/message-factory-implementation": "1.0",
+                "psr/http-factory-implementation": "1.0",
+                "psr/http-message-implementation": "1.0"
+            },
+            "require-dev": {
+                "http-interop/http-factory-tests": "^0.9",
+                "php-http/message-factory": "^1.0",
+                "php-http/psr7-integration-tests": "^1.0",
+                "phpunit/phpunit": "^7.5 || ^8.5 || ^9.4",
+                "symfony/error-handler": "^4.4"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.8-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Nyholm\\Psr7\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Tobias Nyholm",
+                    "email": "tobias.nyholm@gmail.com"
+                },
+                {
+                    "name": "Martijn van der Ven",
+                    "email": "martijn@vanderven.se"
+                }
+            ],
+            "description": "A fast PHP7 implementation of PSR-7",
+            "homepage": "https://tnyholm.se",
+            "keywords": [
+                "psr-17",
+                "psr-7"
+            ],
+            "support": {
+                "issues": "https://github.com/Nyholm/psr7/issues",
+                "source": "https://github.com/Nyholm/psr7/tree/1.8.2"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/Zegnat",
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/nyholm",
+                    "type": "github"
+                }
+            ],
+            "time": "2024-09-09T07:06:30+00:00"
         },
         {
             "name": "open-telemetry/api",
