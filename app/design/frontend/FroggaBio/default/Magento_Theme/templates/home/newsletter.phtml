@@ -1,0 +1,40 @@
+<?php
+/**
+ * Homepage newsletter sign-up, posting to the core newsletter subscriber controller.
+ */
+
+declare(strict_types=1);
+
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+?>
+<section id="newsletter" class="container-site py-8 sm:py-10">
+    <div class="grid items-center gap-8 overflow-hidden rounded-lg bg-primary p-8 text-primary-foreground sm:p-12 lg:grid-cols-[1.2fr_1fr]">
+        <div>
+            <p class="text-xs font-extrabold uppercase text-highlight"><?= $escaper->escapeHtml(__('Newsletter')) ?></p>
+            <h2 class="mt-3 text-3xl font-extrabold leading-tight sm:text-4xl"><?= $escaper->escapeHtml(__('Let’s stay in touch!')) ?></h2>
+            <p class="mt-3 max-w-md text-sm leading-6 text-primary-foreground/75">
+                <?= $escaper->escapeHtml(__('Promotions, new products and application notes — straight to your inbox.')) ?>
+            </p>
+        </div>
+        <form action="<?= $escaper->escapeUrl($block->getUrl('newsletter/subscriber/new', ['_secure' => true])) ?>"
+              method="post"
+              class="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto]"
+        >
+            <?= $block->getBlockHtml('formkey') ?>
+            <input type="email"
+                   name="email"
+                   required
+                   placeholder="you@institution.ca"
+                   aria-label="<?= $escaper->escapeHtmlAttr(__('Email address')) ?>"
+                   class="min-w-0 rounded-md border border-primary-foreground/25 bg-primary-hover px-4 py-3 text-sm text-primary-foreground outline-hidden placeholder:text-primary-foreground/50 focus:border-highlight focus:ring-0"
+            />
+            <button type="submit"
+                    class="inline-flex h-11 shrink-0 items-center justify-center rounded-md bg-highlight px-7 text-sm font-semibold text-highlight-foreground transition-colors hover:bg-highlight-hover focus-ring"
+            ><?= $escaper->escapeHtml(__('Sign up')) ?></button>
+        </form>
+    </div>
+</section>

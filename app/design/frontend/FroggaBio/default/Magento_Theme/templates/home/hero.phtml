@@ -1,0 +1,165 @@
+<?php
+/**
+ * Homepage hero: rotating featured promotion plus two promo tiles.
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\HyvaCsp;
+use Hyva\Theme\ViewModel\LucideIcons;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+/** @var HyvaCsp $hyvaCsp */
+
+/** @var LucideIcons $lucideIcons */
+$lucideIcons = $viewModels->require(LucideIcons::class);
+
+$searchUrl = fn(string $term): string => $block->getUrl('catalogsearch/result', ['_query' => ['q' => $term]]);
+
+$slides = [
+    [
+        'title' => __('FroggaBio Nitrile Gloves'),
+        'offer' => __('Buy 4, get 1 free.'),
+        'detail' => __('Everyday lab protection from a Canadian supplier you trust.'),
+        'image' => 'images/home/nitrile-gloves.jpg',
+        'width' => 1600,
+        'search' => 'Gloves',
+    ],
+    [
+        'title' => __('Ultra Low Temperature Freezers'),
+        'offer' => __('Reliable cold storage.'),
+        'detail' => __('Protect critical samples with dependable cryogenic solutions.'),
+        'image' => 'images/home/ultra-low-freezer.jpg',
+        'width' => 1200,
+        'search' => 'Freezers',
+    ],
+    [
+        'title' => __('Advanced Digital Microscopy'),
+        'offer' => __('See every detail.'),
+        'detail' => __('Clinical imaging systems built for precise, repeatable research.'),
+        'image' => 'images/home/digital-microscope.jpg',
+        'width' => 1200,
+        'search' => 'Microscope',
+    ],
+];
+
+$tiles = [
+    [
+        'eyebrow' => __('Precise filtration'),
+        'title' => __('25 mm syringe filters'),
+        'alt' => __('25 mm syringe filters promotion'),
+        'image' => 'images/home/ultra-low-freezer.jpg',
+        'search' => 'Syringe Filters',
+    ],
+    [
+        'eyebrow' => __('Premium FroggaBio'),
+        'title' => __('High-performance filter tips'),
+        'alt' => __('Premium FroggaBio filter tips promotion'),
+        'image' => 'images/home/digital-microscope.jpg',
+        'search' => 'Filter Tips',
+    ],
+];
+
+$roundButton = 'absolute inset-y-0 z-20 my-auto grid size-10 place-items-center rounded-full border'
+    . ' border-primary-foreground/40 bg-primary/35 text-primary-foreground backdrop-blur-md transition-colors'
+    . ' hover:bg-primary-foreground/10 focus-ring';
+?>
+<script>
+    function initHomeHero() {
+        return {
+            active: 0,
+            count: <?= count($slides) ?>,
+            prev() {
+                this.active = (this.active - 1 + this.count) % this.count;
+            },
+            next() {
+                this.active = (this.active + 1) % this.count;
+            },
+            isActive() {
+                return this.active === Number(this.$el.dataset.slide);
+            }
+        }
+    }
+
+    window.addEventListener('alpine:init', () => {
+        Alpine.data('initHomeHero', initHomeHero);
+    }, { once: true })
+</script>
+<?php $hyvaCsp->registerInlineScript() ?>
+
+<section class="container-site py-6 sm:py-7">
+    <div class="grid gap-4 md:h-[30rem] md:grid-cols-[minmax(0,2.2fr)_minmax(13rem,0.8fr)]">
+        <div class="relative min-h-[25rem] overflow-hidden rounded-lg border border-border bg-card md:h-full md:min-h-0"
+             x-data="initHomeHero"
+             aria-roledescription="carousel"
+             aria-label="<?= $escaper->escapeHtmlAttr(__('Featured promotions')) ?>"
+        >
+            <?php foreach ($slides as $index => $slide): ?>
+                <div class="absolute inset-0"
+                     data-slide="<?= (int) $index ?>"
+                     aria-roledescription="slide"
+                     <?php if ($index > 0): ?>x-cloak<?php endif; ?>
+                     x-show="isActive"
+                     x-transition.opacity.duration.500ms
+                >
+                    <img src="<?= $escaper->escapeUrl($block->getViewFileUrl($slide['image'])) ?>"
+                         alt="<?= $escaper->escapeHtmlAttr($slide['title']) ?>"
+                         width="<?= (int) $slide['width'] ?>"
+                         height="912"
+                         <?= $index === 0 ? 'fetchpriority="high"' : 'loading="lazy"' ?>
+                         class="absolute inset-0 size-full object-cover object-center"
+                    />
+                    <div class="absolute inset-0 bg-linear-to-r from-primary via-primary/85 to-primary/5"></div>
+                    <div class="relative z-10 flex h-full max-w-xl flex-col justify-center p-7 px-16 text-primary-foreground sm:p-12 sm:pl-24 sm:pr-20">
+                        <span class="mb-5 w-fit rounded-full bg-highlight px-3 py-1.5 text-xs font-extrabold text-highlight-foreground">
+                            <?= $escaper->escapeHtml(__('Featured promotion')) ?>
+                        </span>
+                        <?php if ($index === 0): ?><h1 class="text-4xl font-extrabold leading-[1.05] sm:text-5xl"><?php else: ?><p class="text-4xl font-extrabold leading-[1.05] sm:text-5xl"><?php endif; ?>
+                            <?= $escaper->escapeHtml($slide['title']) ?><br/>
+                            <span class="text-highlight"><?= $escaper->escapeHtml($slide['offer']) ?></span>
+                        <?php if ($index === 0): ?></h1><?php else: ?></p><?php endif; ?>
+                        <p class="mt-5 max-w-sm text-sm leading-6 text-primary-foreground/80"><?= $escaper->escapeHtml($slide['detail']) ?></p>
+                        <a href="<?= $escaper->escapeUrl($searchUrl($slide['search'])) ?>"
+                           class="mt-7 inline-flex h-11 w-fit items-center justify-center gap-2 rounded-md bg-highlight px-5 text-sm font-semibold text-highlight-foreground transition-colors hover:bg-highlight-hover focus-ring"
+                        >
+                            <?= $escaper->escapeHtml(__('Shop now')) ?>
+                            <?= $lucideIcons->renderHtml('arrow-right', 'size-4', 16, 16, ['aria-hidden' => 'true']) ?>
+                        </a>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+
+            <button type="button" class="<?= $roundButton ?> left-4" @click="prev"
+                    aria-label="<?= $escaper->escapeHtmlAttr(__('Previous banner')) ?>"
+            ><?= $lucideIcons->renderHtml('chevron-left', 'size-4', 16, 16, ['aria-hidden' => 'true']) ?></button>
+            <button type="button" class="<?= $roundButton ?> right-4" @click="next"
+                    aria-label="<?= $escaper->escapeHtmlAttr(__('Next banner')) ?>"
+            ><?= $lucideIcons->renderHtml('chevron-right', 'size-4', 16, 16, ['aria-hidden' => 'true']) ?></button>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2 md:h-full md:grid-cols-1 md:grid-rows-2">
+            <?php foreach ($tiles as $tile): ?>
+                <a href="<?= $escaper->escapeUrl($searchUrl($tile['search'])) ?>"
+                   class="group relative block min-h-48 overflow-hidden rounded-lg border border-border bg-card text-left focus-ring md:h-full md:min-h-0"
+                >
+                    <img src="<?= $escaper->escapeUrl($block->getViewFileUrl($tile['image'])) ?>"
+                         alt="<?= $escaper->escapeHtmlAttr($tile['alt']) ?>"
+                         width="1200"
+                         height="912"
+                         class="absolute inset-0 size-full object-cover transition duration-500 group-hover:scale-105"
+                    />
+                    <div class="absolute inset-0 bg-linear-to-t from-primary/90 via-primary/25 to-transparent"></div>
+                    <div class="absolute inset-x-0 bottom-0 p-5 text-primary-foreground">
+                        <p class="text-[10px] font-bold uppercase"><?= $escaper->escapeHtml($tile['eyebrow']) ?></p>
+                        <h2 class="mt-1 text-lg font-extrabold"><?= $escaper->escapeHtml($tile['title']) ?></h2>
+                    </div>
+                </a>
+            <?php endforeach; ?>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,77 @@
+<?php
+/**
+ * FroggaBio PDP "Related Products" grid.
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\ProductPage;
+use Magento\Catalog\Block\Product\View;
+use Magento\Catalog\Model\Product\Visibility;
+use Magento\Framework\Escaper;
+
+/** @var View $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var ProductPage $productViewModel */
+$productViewModel = $viewModels->require(ProductPage::class);
+
+$items = $block->getProduct()->getRelatedProductCollection()
+    ->addAttributeToSelect(['name', 'small_image', 'price', 'special_price', 'url_key'])
+    ->addFinalPrice()
+    ->setVisibility([Visibility::VISIBILITY_IN_CATALOG, Visibility::VISIBILITY_BOTH])
+    ->setPositionOrder()
+    ->setPageSize(4);
+
+if (!$items->count()) {
+    return;
+}
+?>
+<section class="py-12" aria-labelledby="related-products-title">
+    <div class="mb-5 flex items-end justify-between">
+        <h2 id="related-products-title" class="text-2xl font-extrabold"><?= $escaper->escapeHtml(__('Related Products')) ?></h2>
+        <a href="<?= $escaper->escapeUrl($block->getUrl('catalogsearch/advanced')) ?>" class="text-sm font-bold text-primary">
+            <?= $escaper->escapeHtml(__('View all →')) ?>
+        </a>
+    </div>
+    <div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
+        <?php foreach ($items as $item): ?>
+            <?php $canAddDirectly = $item->isSaleable() && !$item->getTypeInstance()->hasRequiredOptions($item); ?>
+            <article class="overflow-hidden rounded-lg border border-border bg-card">
+                <a href="<?= $escaper->escapeUrl($item->getProductUrl()) ?>" tabindex="-1">
+                    <img src="<?= $escaper->escapeUrl($block->getImage($item, 'related_products_list')->getImageUrl()) ?>"
+                         alt="<?= $escaper->escapeHtmlAttr($item->getName()) ?>"
+                         width="400"
+                         height="300"
+                         loading="lazy"
+                         class="aspect-[4/3] w-full object-cover"
+                    />
+                </a>
+                <div class="p-4">
+                    <a href="<?= $escaper->escapeUrl($item->getProductUrl()) ?>" class="text-sm font-extrabold hover:text-primary">
+                        <?= $escaper->escapeHtml($item->getName()) ?>
+                    </a>
+                    <div class="mt-2 flex items-center justify-between gap-2">
+                        <span class="font-bold"><?= /* @noEscape */ $productViewModel->currency($item->getFinalPrice()) ?></span>
+                        <?php if ($canAddDirectly): ?>
+                            <form method="post" action="<?= $escaper->escapeUrl($block->getAddToCartUrl($item)) ?>">
+                                <?= $block->getBlockHtml('formkey') ?>
+                                <input type="hidden" name="product" value="<?= (int) $item->getId() ?>">
+                                <button type="submit"
+                                        class="inline-flex h-9 items-center justify-center rounded-md bg-primary px-4 text-xs font-semibold text-primary-foreground transition-colors hover:bg-primary-hover focus-ring"
+                                        aria-label="<?= $escaper->escapeHtmlAttr(__('Add %1 to cart', $item->getName())) ?>"
+                                ><?= $escaper->escapeHtml(__('Add')) ?></button>
+                            </form>
+                        <?php else: ?>
+                            <a href="<?= $escaper->escapeUrl($item->getProductUrl()) ?>"
+                               class="inline-flex h-9 items-center justify-center rounded-md bg-primary px-4 text-xs font-semibold text-primary-foreground transition-colors hover:bg-primary-hover focus-ring"
+                            ><?= $escaper->escapeHtml(__('View')) ?></a>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </article>
+        <?php endforeach; ?>
+    </div>
+</section>

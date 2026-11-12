@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <!-- Replace the Hyvä demo homepage with the FroggaBio homepage sections -->
+        <referenceBlock name="hero" remove="true"/>
+        <referenceBlock name="slider-1" remove="true"/>
+        <referenceBlock name="slider-2" remove="true"/>
+
+        <!-- Sections size themselves with container-site, so drop Hyvä's .columns container -->
+        <referenceContainer name="main.content" htmlClass="page-main page-main-full-width"/>
+
+        <referenceContainer name="content">
+            <container name="froggabio.home" htmlTag="div" htmlId="top" before="-">
+                <block name="home.hero" template="Magento_Theme::home/hero.phtml"/>
+                <block name="home.categories" template="Magento_Theme::home/categories.phtml"/>
+                <block name="home.highlights" template="Magento_Theme::home/highlights.phtml"/>
+                <block name="home.spotlight" template="Magento_Theme::home/spotlight.phtml"/>
+                <block name="home.support" template="Magento_Theme::home/support.phtml"/>
+                <block name="home.suppliers" template="Magento_Theme::home/suppliers.phtml"/>
+                <block name="home.newsletter" template="Magento_Theme::home/newsletter.phtml"/>
+            </container>
+        </referenceContainer>
+    </body>
+</page>

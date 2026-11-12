@@ -1,0 +1,42 @@
+<?php
+/**
+ * FroggaBio cart item remove button.
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\LucideIcons;
+use Magento\Checkout\Block\Cart\Item\Renderer\Actions\Remove;
+use Magento\Framework\Escaper;
+
+/** @var Remove $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var LucideIcons $lucideIcons */
+$lucideIcons = $viewModels->require(LucideIcons::class);
+
+$item = $block->getItem();
+if ($item->getProductType() === 'configurable') {
+    $productOptions = $item->getProduct()->getTypeInstance()->getOrderOptions($item->getProduct());
+    $productName = $productOptions["simple_name"];
+} else {
+    $productName = $item->getName();
+}
+?>
+<button
+    type="button"
+    class="grid size-8 place-items-center rounded-md text-muted-foreground transition-colors hover:text-destructive focus-ring"
+    data-delete-post-json="<?= $escaper->escapeHtmlAttr($block->getDeletePostJson()) ?>"
+    data-cart-item-removed-payload="<?= $escaper->escapeHtml(json_encode([
+        'product_sku' => $item->getSku(),
+        'product_name' => $item->getName(),
+        'product_price_value' => $item->getPrice(),
+        'quantity' => $item->getQty()
+    ])) ?>"
+    @click.prevent="removeItem"
+    aria-label="<?= $escaper->escapeHtmlAttr(__('Remove %1', $productName)) ?>"
+>
+    <?= $lucideIcons->renderHtml('trash-2', 'size-4', 16, 16, ['aria-hidden' => 'true']) ?>
+</button>

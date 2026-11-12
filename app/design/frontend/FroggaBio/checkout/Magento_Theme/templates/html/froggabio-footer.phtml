@@ -1,0 +1,60 @@
+<?php
+/**
+ * FroggaBio footer for the Luma checkout theme (same content as the Hyvä storefront footer).
+ */
+
+declare(strict_types=1);
+
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+
+$contactUrl = $block->getUrl('contact');
+$searchUrl = fn(string $term): string => $block->getUrl('catalogsearch/result', ['_query' => ['q' => $term]]);
+
+$columns = [
+    [__('Company'), [
+        [__('About us'), $contactUrl],
+        [__('Careers'), $contactUrl],
+        [__('Contact us'), $contactUrl],
+        [__('Our commitments'), $contactUrl],
+    ]],
+    [__('Shopping tools'), [
+        [__('My account'), $block->getUrl('customer/account')],
+        [__('My cart'), $block->getUrl('checkout/cart')],
+        [__('Request a quote'), $contactUrl],
+        [__('Order FAQ'), $contactUrl],
+    ]],
+    [__('Speciality products'), [
+        [__('Stem Cells'), $searchUrl('Stem Cells')],
+        [__('Cytogenetics'), $searchUrl('Cytogenetics')],
+        [__('Microscopy'), $searchUrl('Microscopy')],
+        [__('Exosomes'), $searchUrl('Exosomes')],
+    ]],
+];
+?>
+<div class="froggabio-footer">
+    <div class="froggabio-footer__columns">
+        <div class="froggabio-footer__brand">
+            <img src="<?= $escaper->escapeUrl($block->getViewFileUrl('images/froggabio-logo.png')) ?>"
+                 alt="FroggaBio Inc." width="176" height="41" loading="lazy"/>
+            <p><?= $escaper->escapeHtml(__('Life Science, Pathology & Microscopy supplies for researchers across Canada, the USA and globally.')) ?></p>
+        </div>
+        <?php foreach ($columns as [$title, $links]): ?>
+            <div class="froggabio-footer__column">
+                <h3><?= $escaper->escapeHtml($title) ?></h3>
+                <ul>
+                    <?php foreach ($links as [$label, $url]): ?>
+                        <li><a href="<?= $escaper->escapeUrl($url) ?>"><?= $escaper->escapeHtml($label) ?></a></li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+        <?php endforeach; ?>
+    </div>
+    <div class="froggabio-footer__bottom">
+        <span><?= $escaper->escapeHtml(__('© %1 FroggaBio Inc. All rights reserved.', date('Y'))) ?></span>
+        <span><?= $escaper->escapeHtml(__('Canada · USA · Global')) ?></span>
+    </div>
+</div>

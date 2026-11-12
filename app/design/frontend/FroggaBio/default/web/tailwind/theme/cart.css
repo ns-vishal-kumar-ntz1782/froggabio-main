@@ -1,0 +1,30 @@
+/* FroggaBio cart page */
+
+.checkout-cart-index {
+    .page-main {
+        margin-block: --spacing(6) --spacing(12);
+    }
+
+    .cart-summary-card {
+        .cart-summary-actions:empty {
+            display: none;
+        }
+    }
+
+    /* Edit (pencil) and remove sit stacked in the narrow actions column */
+    .item-actions {
+        flex-direction: column;
+
+        .btn {
+            padding: --spacing(1.5);
+            border: 0;
+            background: transparent;
+            color: var(--color-muted-foreground);
+            box-shadow: none;
+
+            &:hover {
+                color: var(--color-primary);
+            }
+        }
+    }
+}

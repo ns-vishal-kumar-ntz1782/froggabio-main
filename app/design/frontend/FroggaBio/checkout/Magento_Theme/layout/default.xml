@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <!-- FroggaBio header: same design as the Hyvä storefront header, rendered by one Luma template
+             (its cart pill reads checkoutConfig + Luma customer-data, so Luma's minicart isn't needed). -->
+        <referenceContainer name="header.container">
+            <block class="Magento\Framework\View\Element\Template" name="froggabio.header"
+                   template="Magento_Theme::html/froggabio-header.phtml" before="-"/>
+        </referenceContainer>
+
+        <referenceContainer name="header.panel.wrapper" remove="true"/>
+        <referenceBlock name="logo" remove="true"/>
+        <referenceBlock name="top.search" remove="true"/>
+        <referenceBlock name="minicart" remove="true"/>
+        <referenceBlock name="catalog.compare.link" remove="true"/>
+        <referenceBlock name="navigation.sections" remove="true"/>
+
+        <!-- FroggaBio footer replaces Luma's links, newsletter, store switcher and copyright -->
+        <referenceBlock name="footer_links" remove="true"/>
+        <referenceBlock name="form.subscribe" remove="true"/>
+        <referenceBlock name="store_switcher" remove="true"/>
+        <referenceBlock name="copyright" remove="true"/>
+        <referenceContainer name="footer">
+            <block class="Magento\Framework\View\Element\Template" name="froggabio.footer"
+                   template="Magento_Theme::html/froggabio-footer.phtml"/>
+        </referenceContainer>
+    </body>
+</page>

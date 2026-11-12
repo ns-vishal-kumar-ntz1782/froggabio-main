@@ -1,0 +1,39 @@
+<?php
+/**
+ * FroggaBio cart promo code field.
+ */
+
+declare(strict_types=1);
+
+use Magento\Checkout\Block\Cart\Coupon;
+use Magento\Framework\Escaper;
+
+/** @var Coupon $block */
+/** @var Escaper $escaper */
+
+$couponCode = (string) $block->getCouponCode();
+$hasCoupon = $couponCode !== '';
+?>
+<form id="discount-coupon-form"
+      class="mt-4 flex gap-2"
+      method="post"
+      action="<?= $escaper->escapeUrl($block->getUrl('checkout/cart/couponPost')) ?>"
+      @submit.prevent="postCart"
+>
+    <?= $block->getBlockHtml('formkey') ?>
+    <label for="coupon_code" class="sr-only"><?= $escaper->escapeHtml(__('Promo code')) ?></label>
+    <input type="text"
+           id="coupon_code"
+           name="coupon_code"
+           value="<?= $escaper->escapeHtmlAttr($couponCode) ?>"
+           placeholder="<?= $escaper->escapeHtmlAttr(__('Promo code')) ?>"
+           class="h-10 min-w-0 flex-1 rounded-md border border-border bg-background px-3 text-sm"
+           <?= $hasCoupon ? 'readonly' : 'required' ?>
+    />
+    <?php if ($hasCoupon): ?>
+        <input type="hidden" name="remove" value="1">
+    <?php endif; ?>
+    <button type="submit"
+            class="inline-flex h-10 shrink-0 items-center justify-center rounded-md border border-border-strong px-4 text-xs font-semibold text-foreground transition-colors hover:bg-muted focus-ring"
+    ><?= $escaper->escapeHtml($hasCoupon ? __('Remove') : __('Apply')) ?></button>
+</form>

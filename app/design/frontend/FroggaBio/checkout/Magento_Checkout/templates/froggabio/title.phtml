@@ -1,0 +1,25 @@
+<?php
+/**
+ * FroggaBio checkout heading.
+ */
+
+declare(strict_types=1);
+
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Helper\SecureHtmlRenderer;
+
+/** @var Escaper $escaper */
+/** @var SecureHtmlRenderer $secureRenderer */
+
+// Virtual-only carts skip the shipping steps; lets the CSS number "Payment" as step 1.
+$virtualQuoteScript = <<<JS
+document.addEventListener('DOMContentLoaded', function () {
+    var quote = window.checkoutConfig && window.checkoutConfig.quoteData;
+    if (quote && Number(quote.is_virtual)) {
+        document.body.classList.add('froggabio-virtual-quote');
+    }
+});
+JS;
+?>
+<h1 class="froggabio-checkout-title"><?= $escaper->escapeHtml(__('Checkout')) ?></h1>
+<?= /* @noEscape */ $secureRenderer->renderTag('script', [], $virtualQuoteScript, false) ?>

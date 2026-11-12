@@ -1,0 +1,166 @@
+/* FroggaBio product page: styles for blocks rendered by Hyvä templates we don't override */
+
+.catalog-product-view {
+    .breadcrumbs {
+        background: transparent;
+        box-shadow: none;
+        font-size: var(--text-xs);
+        font-weight: 500;
+        color: var(--color-muted-foreground);
+
+        a:hover {
+            color: var(--color-primary);
+        }
+    }
+
+    /* Gallery: bordered 4:3 frame, thumbnails in a row of four */
+    #gallery-main {
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-lg);
+        background: var(--color-surface-soft);
+
+        img {
+            object-fit: cover;
+        }
+    }
+
+    #gallery [data-pager] {
+        @variant lg {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: --spacing(3);
+        }
+
+        .snap-marker {
+            @variant lg {
+                padding: 0;
+                border: 2px solid var(--color-border);
+                border-radius: var(--radius-md);
+                box-shadow: none;
+
+                &[aria-current] {
+                    border-color: var(--color-primary);
+                }
+
+                img {
+                    width: 100%;
+                    border-radius: 0;
+                }
+            }
+        }
+    }
+}
+
+.pdp-buybox {
+    .final-price .price,
+    .price-final_price .price {
+        font-size: var(--text-3xl);
+        font-weight: 800;
+        line-height: 1;
+        color: var(--color-foreground);
+    }
+
+    .old-price .price {
+        font-size: var(--text-sm);
+        font-weight: 600;
+        color: var(--color-muted-foreground);
+    }
+
+    #product_addtocart_form {
+        margin: 0;
+    }
+
+    .product-options-wrapper {
+        .fieldset {
+            display: grid;
+            gap: --spacing(4);
+        }
+
+        label,
+        .label {
+            font-size: var(--text-xs);
+            font-weight: 700;
+            color: var(--color-foreground);
+        }
+
+        select,
+        input[type="text"],
+        textarea {
+            width: 100%;
+            height: --spacing(11);
+            margin-top: --spacing(1);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            background-color: var(--color-background);
+            font-size: var(--text-sm);
+            font-weight: 500;
+        }
+    }
+}
+
+/* Overview copy from the product description */
+.pdp-description {
+    h2,
+    h3,
+    h4 {
+        margin-top: --spacing(5);
+        font-size: var(--text-base);
+        font-weight: 800;
+        color: var(--color-foreground);
+    }
+
+    p + p {
+        margin-top: --spacing(3);
+    }
+
+    ul {
+        display: grid;
+        gap: --spacing(2);
+        margin-top: --spacing(2);
+        color: var(--color-foreground);
+    }
+
+    li {
+        display: flex;
+        gap: --spacing(2);
+
+        &::before {
+            content: "";
+            flex-shrink: 0;
+            width: 1rem;
+            height: 1rem;
+            margin-top: .25rem;
+            background-color: var(--color-primary);
+            mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cpath d='m9 12 2 2 4-4'/%3E%3C/svg%3E") center / contain no-repeat;
+        }
+    }
+}
+
+.pdp-specifications {
+    table {
+        width: 100%;
+        font-size: var(--text-sm);
+    }
+
+    tr {
+        border-top: 1px solid var(--color-border);
+    }
+
+    th,
+    td {
+        padding-block: --spacing(3);
+        text-align: left;
+        vertical-align: top;
+    }
+
+    th {
+        width: 40%;
+        font-weight: 700;
+        color: var(--color-muted-foreground);
+    }
+
+    h2:not(:first-child),
+    .section-title {
+        display: none;
+    }
+}

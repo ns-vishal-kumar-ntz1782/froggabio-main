@@ -1,0 +1,60 @@
+<?php
+/**
+ * Homepage "Shop by category" grid.
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\LucideIcons;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var LucideIcons $lucideIcons */
+$lucideIcons = $viewModels->require(LucideIcons::class);
+
+$searchUrl = fn(string $term): string => $block->getUrl('catalogsearch/result', ['_query' => ['q' => $term]]);
+
+$categories = [
+    ['name' => 'Consumables', 'detail' => __('Tips, tubes, plates, gloves & filters'), 'icon' => 'test-tube-diagonal'],
+    ['name' => 'Instruments', 'detail' => __('Centrifuges, cyclers, readers & pipettes'), 'icon' => 'package-check'],
+    ['name' => 'Reagents', 'detail' => __('PCR, antibodies, media, CRISPR & NGS'), 'icon' => 'leaf'],
+    ['name' => 'Cryo Solutions', 'detail' => __('Freezers, automation & sample handling'), 'icon' => 'snowflake'],
+    ['name' => 'Microscopes', 'detail' => __('Confocal, inverted, upright & cameras'), 'icon' => 'microscope'],
+    ['name' => 'Pathology', 'detail' => __('Gross to digital pathology, staining & IHC'), 'icon' => 'test-tube-diagonal'],
+];
+?>
+<section id="categories" class="container-site py-8 sm:py-10">
+    <div class="mb-6 flex items-end justify-between gap-4">
+        <div>
+            <p class="text-xs font-extrabold uppercase text-primary"><?= $escaper->escapeHtml(__('Shop by category')) ?></p>
+            <h2 class="mt-2 text-3xl font-extrabold sm:text-4xl"><?= $escaper->escapeHtml(__('Everything your lab runs on')) ?></h2>
+        </div>
+        <a href="<?= $escaper->escapeUrl($block->getUrl('catalogsearch/advanced')) ?>" class="hidden items-center gap-1 text-sm font-bold text-primary sm:flex">
+            <?= $escaper->escapeHtml(__('Browse all products')) ?>
+            <?= $lucideIcons->renderHtml('arrow-right', 'size-4', 16, 16, ['aria-hidden' => 'true']) ?>
+        </a>
+    </div>
+    <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <?php foreach ($categories as $category): ?>
+            <a href="<?= $escaper->escapeUrl($searchUrl($category['name'])) ?>"
+               class="group grid min-h-40 grid-cols-[1fr_auto] items-end rounded-md border border-border bg-card p-5 transition hover:-translate-y-0.5 hover:border-border-strong hover:shadow-lg"
+            >
+                <div>
+                    <span class="mb-7 grid size-10 place-items-center rounded-md bg-surface-mint text-primary">
+                        <?= $lucideIcons->renderHtml($category['icon'], 'size-5', 20, 20, ['aria-hidden' => 'true']) ?>
+                    </span>
+                    <h3 class="text-lg font-extrabold"><?= $escaper->escapeHtml(__($category['name'])) ?></h3>
+                    <p class="mt-1 text-xs leading-5 text-muted-foreground"><?= $escaper->escapeHtml($category['detail']) ?></p>
+                </div>
+                <span class="grid size-9 place-items-center rounded-full bg-surface-mint text-primary transition group-hover:bg-primary group-hover:text-primary-foreground">
+                    <?= $lucideIcons->renderHtml('arrow-right', 'size-4', 16, 16, ['aria-hidden' => 'true']) ?>
+                </span>
+            </a>
+        <?php endforeach; ?>
+    </div>
+</section>

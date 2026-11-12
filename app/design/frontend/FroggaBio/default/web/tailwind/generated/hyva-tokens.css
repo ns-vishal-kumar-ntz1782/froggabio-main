@@ -4,9 +4,9 @@
  */
 
 @theme {
-	--color-primary: oklch(46% 0.2 265);
-	--color-secondary: oklch(53% 0.15 150);
-	--color-on-primary: #fff;
-	--color-on-secondary: #fff;
+	--color-primary: oklch(31.5% 0.09 163);
+	--color-secondary: oklch(85% 0.2 128);
+	--color-on-primary: oklch(99% 0.004 145);
+	--color-on-secondary: oklch(22% 0.06 150);
 
 }
