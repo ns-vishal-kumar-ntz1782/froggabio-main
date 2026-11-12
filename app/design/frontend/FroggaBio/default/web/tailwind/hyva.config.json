@@ -9,7 +9,11 @@
                 "src": "vendor/hyva-themes/magento2-default-theme"
             }
         ],
-        "exclude": []
+        "exclude": [
+            {
+                "src": "vendor/hyva-themes/magento2-bsscommerce-geoip-auto-switch-store/src"
+            }
+        ]
     },
     "tokens": {
         "values": {

@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Bss_GeoIPAutoSwitchStore: the Hyvä compat module replaces the jQuery Magnific Popup,
+ * so its stylesheet is not needed on this theme.
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <remove src="Bss_GeoIPAutoSwitchStore::css/magnific-popup.css"/>
+    </head>
+</page>

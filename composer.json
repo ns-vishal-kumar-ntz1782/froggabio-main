@@ -18,7 +18,9 @@
     },
     "version": "2.4.9",
     "require": {
+        "hyva-themes/magento2-bsscommerce-geoip-auto-switch-store": "^1.0.3",
         "hyva-themes/magento2-default-theme": "^1.5.2",
+        "mage-os/module-admin-activity-log": "^2.0",
         "magento/composer": "^1.10.1-beta1",
         "magento/composer-dependency-version-audit-plugin": "~0.1",
         "magento/composer-root-update-plugin": "^2.0.4",
@@ -71,6 +73,9 @@
             "Magento\\Tools\\": "dev/tools/Magento/Tools/",
             "Magento\\Tools\\Sanity\\": "dev/build/publication/sanity/Magento/Tools/Sanity/"
         }
+    },
+    "replace": {
+        "bsscommerce/geoip-auto-switch-store": "1.4.6"
     },
     "minimum-stability": "stable",
     "prefer-stable": true,

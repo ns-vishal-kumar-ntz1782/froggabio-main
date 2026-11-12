@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d8cc2ac3af37d3b6237a6ddc07409d4e",
+    "content-hash": "4736eecbfdadac6b2d00d0fa7184804e",
     "packages": [
         {
             "name": "2tvenom/cborencode",
@@ -2628,6 +2628,51 @@
             "time": "2026-06-08T16:59:52+02:00"
         },
         {
+            "name": "hyva-themes/magento2-bsscommerce-geoip-auto-switch-store",
+            "version": "1.0.3",
+            "dist": {
+                "type": "zip",
+                "url": "https://hyva-themes.repo.packagist.com/envisionecomme-2hfp7/dists/hyva-themes/magento2-bsscommerce-geoip-auto-switch-store/1.0.3.0/7b94afacbf246c0a8545970a7728f1fbda1a9312.zip",
+                "reference": "7b94afacbf246c0a8545970a7728f1fbda1a9312",
+                "mirrors": [
+                    {
+                        "url": "https://hyva-themes.repo.packagist.com/envisionecomme-2hfp7/dists/%package%/%version%/r%reference%.%type%",
+                        "preferred": true
+                    }
+                ]
+            },
+            "require": {
+                "bsscommerce/geoip-auto-switch-store": "*",
+                "hyva-themes/magento2-compat-module-fallback": "*",
+                "magento/framework": "*"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "src/registration.php"
+                ],
+                "psr-4": {
+                    "Hyva\\BssGeoIPAutoSwitchStore\\": "src/"
+                }
+            },
+            "notification-url": "https://hyva-themes.repo.packagist.com/envisionecomme-2hfp7/downloads/",
+            "license": [
+                "see LICENSE.md"
+            ],
+            "authors": [
+                {
+                    "name": "Hyvä Themes B.V.",
+                    "email": "info@hyva.io"
+                }
+            ],
+            "description": "Hyvä Themes Compatibility module for Bss_GeoipStoreviewSwitcher",
+            "support": {
+                "source": "https://gitlab.hyva.io/hyva-themes/hyva-compat/magento2-bsscommerce-geoip-auto-switch-store/-/tree/1.0.3",
+                "issues": "https://gitlab.hyva.io/hyva-themes/hyva-compat/magento2-bsscommerce-geoip-auto-switch-store/-/issues"
+            },
+            "time": "2026-07-15T11:33:37+07:00"
+        },
+        {
             "name": "hyva-themes/magento2-compat-module-fallback",
             "version": "1.1.4",
             "dist": {
@@ -5101,6 +5146,74 @@
                 }
             ],
             "time": "2026-07-09T11:49:27+00:00"
+        },
+        {
+            "name": "mage-os/module-admin-activity-log",
+            "version": "2.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mage-os/module-admin-activity-log.git",
+                "reference": "b434028d169984306791fdae6cc7f540e5376df8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mage-os/module-admin-activity-log/zipball/b434028d169984306791fdae6cc7f540e5376df8",
+                "reference": "b434028d169984306791fdae6cc7f540e5376df8",
+                "shasum": ""
+            },
+            "require": {
+                "magento/framework": ">=100.0.0",
+                "magento/module-backend": ">=100.0.0",
+                "magento/module-store": ">=100.0.0",
+                "magento/module-ui": ">=100.0.0",
+                "magento/module-user": ">=100.0.0",
+                "php": ">=8.2"
+            },
+            "replace": {
+                "kiwicommerce/module-admin-activity": "1.0.8"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^9.5||^10.0"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "MageOS\\AdminActivityLog\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "OSL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "Kiwi Commerce Ltd",
+                    "email": "hello@kiwicommerce.co.uk",
+                    "homepage": "https://kiwicommerce.co.uk/"
+                },
+                {
+                    "name": "Ryan Hoerr",
+                    "email": "rhoerr@users.noreply.github.com",
+                    "homepage": "https://mage-os.org/"
+                }
+            ],
+            "description": "The Admin Activity extension makes it easy to track all admin activity with comprehensive audit logging.",
+            "keywords": [
+                "activity",
+                "admin",
+                "backend",
+                "log",
+                "magento 2",
+                "magento2"
+            ],
+            "support": {
+                "issues": "https://github.com/mage-os/module-admin-activity-log/issues",
+                "source": "https://github.com/mage-os/module-admin-activity-log/tree/2.0.2"
+            },
+            "time": "2026-08-04T03:22:21+00:00"
         },
         {
             "name": "magento/adobe-stock-integration",

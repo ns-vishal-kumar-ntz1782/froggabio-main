@@ -29,6 +29,11 @@
 @import "./generated/hyva-source.css";
 @import "./generated/hyva-tokens.css";
 
+/* Bss GeoIP Hyvä compat: excluded in hyva.config.json because its tailwind-source.css
+   uses a Tailwind v3 style bare import that v4 cannot resolve; load its parts directly. */
+@source "../../../../../../../vendor/hyva-themes/magento2-bsscommerce-geoip-auto-switch-store/src";
+@import "../../../../../../../vendor/hyva-themes/magento2-bsscommerce-geoip-auto-switch-store/src/view/frontend/tailwind/components/geoip.css";
+
 @theme {
     --color-ink: var(--color-slate-950);
     --color-ink-muted: var(--color-slate-600);
