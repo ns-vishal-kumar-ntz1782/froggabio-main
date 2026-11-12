@@ -1,0 +1,62 @@
+<?php
+/**
+ * Copy to config.php and adjust. config.php is git-ignored (contains credentials).
+ */
+return [
+    // Old shop database (Magento 2.4.6 / 2.4.7 / 2.4.8). Only read, never modified.
+    'source' => [
+        'host' => '127.0.0.1',
+        'port' => 3306,
+        'dbname' => 'froggabio_old',
+        'username' => 'root',
+        'password' => '',
+        'table_prefix' => '',
+    ],
+
+    // New 2.4.9 database. null = read from app/etc/env.php of this Magento install.
+    'target' => null,
+
+    // Old website code => new website code. Unlisted codes are matched by the same code; when the
+    // new shop has a single website, every old website is mapped to it automatically.
+    'website_map' => [
+        // 'usa' => 'base',
+    ],
+
+    // Old store view code => new store view code. Unlisted codes are matched by the same code.
+    // Store-level values (names, descriptions, labels...) of unmapped store views are NOT migrated.
+    'store_map' => [
+        // 'default' => 'default',
+        // 'us'      => 'usastoreview',
+        // 'global'  => 'globalstoreview',
+    ],
+
+    // New store view code used for orders/customers whose old store view is unmapped.
+    // null = default store view of the default website.
+    'fallback_store' => null,
+
+    // Old customer group code => new customer group code. Unlisted groups are matched by code,
+    // missing ones are created.
+    'customer_group_map' => [],
+
+    // Old payment method code => new code, for methods of removed extensions, so the admin order
+    // view still renders (e.g. 'old_gateway' => 'checkmo'). Shown by --check.
+    'payment_method_map' => [],
+
+    // Old MSI source code => new source code. Unlisted sources are created in the target.
+    'inventory_source_map' => [],
+
+    // Create product/category/customer attributes that only exist in the old shop.
+    'create_missing_attributes' => true,
+
+    // Attribute codes never created in the target (e.g. attributes of removed extensions).
+    'skip_attributes' => [],
+
+    // Attribute values not copied: theme / layout settings that point to the old theme.
+    'skip_attribute_values' => [
+        'custom_design', 'custom_design_from', 'custom_design_to',
+        'custom_layout_update', 'custom_layout_update_file',
+    ],
+
+    // Clear old theme / layout XML overrides on CMS pages.
+    'cms_strip_layout_updates' => true,
+];
