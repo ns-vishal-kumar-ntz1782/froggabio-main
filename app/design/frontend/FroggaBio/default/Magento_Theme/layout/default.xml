@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceBlock name="logo">
+            <arguments>
+                <argument name="logo_file" xsi:type="string">images/froggabio-logo.png</argument>
+                <argument name="logo_alt" xsi:type="string">FroggaBio Inc.</argument>
+                <argument name="logo_width" xsi:type="number">768</argument>
+                <argument name="logo_height" xsi:type="number">181</argument>
+            </arguments>
+        </referenceBlock>
+
+        <!-- The FroggaBio footer is static markup in html/footer.phtml -->
+        <referenceBlock name="footer-static-links" remove="true"/>
+        <referenceBlock name="footer-cms-content" remove="true"/>
+    </body>
+</page>

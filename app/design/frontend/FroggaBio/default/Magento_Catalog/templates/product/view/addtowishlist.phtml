@@ -1,0 +1,134 @@
+<?php
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\CurrentProduct;
+use Hyva\Theme\ViewModel\LucideIcons;
+use Hyva\Theme\ViewModel\Wishlist;
+use Magento\Catalog\Model\Product;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var Wishlist $wishlistViewModel */
+$wishlistViewModel = $viewModels->require(Wishlist::class);
+
+/** @var LucideIcons $lucideIcons */
+$lucideIcons = $viewModels->require(LucideIcons::class);
+
+/** @var CurrentProduct $currentProduct */
+$currentProduct = $viewModels->require(CurrentProduct::class);
+
+/** @var Product $product */
+$product = $currentProduct->get();
+
+if (!$product->getId() || !$wishlistViewModel->isEnabled()) {
+    return;
+}
+/**
+ * When visiting wishlist/index/configure, the current class is Magento\Wishlist\Block\Item\Configure
+ * In that case we take the form parameters from the existing wishlist item
+ */
+$updateParams = $block->getUpdateParams() ?: null;
+$uniqueId = '_' . uniqid();
+?>
+<script>
+    function initWishlist<?= /** @noEscape */ $uniqueId ?>() {
+        return {
+            addToWishlist(productId) {
+
+                const postParams = <?php if ($updateParams): ?>
+                    <?= /* @noEscape */ $updateParams ?>
+                <?php else: ?>
+                {
+                    action: BASE_URL + "wishlist/index/add/",
+                    data: {
+                        product: productId,
+                        uenc: hyva.getUenc()
+                    }
+                }
+                <?php endif; ?>
+
+                const params = new URLSearchParams(postParams.data);
+                params.set('form_key', hyva.getFormKey());
+
+                const form = document.getElementById('product_addtocart_form');
+                if (form) {
+                    new FormData(form).forEach((value, key) => params.set(key, value));
+                }
+
+                fetch(postParams.action, {
+                    "headers": {
+                        "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+                    },
+                    "body": params.toString(),
+                    "method": "POST",
+                    "mode": "cors",
+                    "credentials": "include"
+                }).then((response) => {
+                    if (response.redirected) {
+                        window.location.href = response.url;
+                    } else if (response.ok) {
+                        return response.json();
+                    } else {
+                        typeof window.dispatchMessages !== "undefined" && window.dispatchMessages(
+                            [{
+                                type: "warning",
+                                text: "<?= $escaper->escapeHtml(__('Could not add item to wishlist.')) ?>"
+                            }], 5000
+                        );
+                    }
+                }).then((response) => {
+                    if (!response) {
+                        return;
+                    }
+                    typeof window.dispatchMessages !== "undefined" && window.dispatchMessages(
+                        [{
+                            type: (response.success) ? "success" : "error",
+                            text: (response.success)
+                                ? "<?= $escaper->escapeHtml(
+                                    __("%1 has been added to your Wish List.", __("Product"))
+                                ) ?>"
+                                : response.error_message
+                        }], 5000
+                    );
+                    const reloadCustomerDataEvent = new CustomEvent("reload-customer-section-data");
+                    window.dispatchEvent(reloadCustomerDataEvent);
+                }).catch((error) => {
+                    typeof window.dispatchMessages !== "undefined" && window.dispatchMessages(
+                        [{
+                            type: "error",
+                            text: error
+                        }], 5000
+                    );
+                });
+            }
+        }
+    }
+</script>
+
+<button x-data="initWishlist<?= /** @noEscape */ $uniqueId ?>()"
+        x-defer="intersect"
+        @click.prevent="addToWishlist(<?= (int)$product->getId() ?>)"
+        title="<?= $escaper->escapeHtmlAttr(
+            ($updateParams) ? __('Update Wish List') : __('Add to Wish List')
+        ) ?>"
+        aria-label="<?= $escaper->escapeHtmlAttr(
+            ($updateParams) ? __('Update Wish List') : __('Add to Wish List')
+        ) ?>"
+        id="add-to-wishlist"
+        class="flex items-center gap-1 hover:underline"
+        data-addto="wishlist"
+>
+    <?= $lucideIcons->heartHtml('size-4', 16, 16, ['aria-hidden' => 'true']) ?>
+    <?= $escaper->escapeHtml(__('Add to wishlist')) ?>
+</button>

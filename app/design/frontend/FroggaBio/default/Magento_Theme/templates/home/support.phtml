@@ -1,0 +1,56 @@
+<?php
+/**
+ * Homepage value propositions.
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\LucideIcons;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var LucideIcons $lucideIcons */
+$lucideIcons = $viewModels->require(LucideIcons::class);
+
+$contactUrl = $block->getUrl('contact');
+
+$items = [
+    [
+        'icon' => 'leaf',
+        'eyebrow' => __('Proudly Canadian'),
+        'title' => __('FroggaBio Inc.'),
+        'text' => __('Bringing cutting-edge products to researchers across the country.'),
+    ],
+    [
+        'icon' => 'headphones',
+        'eyebrow' => __('You won’t be alone'),
+        'title' => __('Customer support'),
+        'text' => __('Trained staff ready to help with products, orders and applications.'),
+    ],
+    [
+        'icon' => 'package-check',
+        'eyebrow' => __('Safe & fast'),
+        'title' => __('Secured payment'),
+        'text' => __('A PCI-compliant experience, curated to be fast, efficient and safe.'),
+    ],
+];
+?>
+<section id="support" class="container-site grid gap-3 py-8 sm:grid-cols-3 sm:py-10">
+    <?php foreach ($items as $item): ?>
+        <div class="border-t border-border-strong py-6 sm:px-6">
+            <?= $lucideIcons->renderHtml($item['icon'], 'size-7 text-primary', 28, 28, ['aria-hidden' => 'true']) ?>
+            <p class="mt-7 text-[10px] font-extrabold uppercase text-primary"><?= $escaper->escapeHtml($item['eyebrow']) ?></p>
+            <h3 class="mt-2 text-lg font-extrabold"><?= $escaper->escapeHtml($item['title']) ?></h3>
+            <p class="mt-2 text-sm leading-6 text-muted-foreground"><?= $escaper->escapeHtml($item['text']) ?></p>
+            <a href="<?= $escaper->escapeUrl($contactUrl) ?>" class="mt-5 inline-flex items-center gap-1 text-sm font-bold text-primary">
+                <?= $escaper->escapeHtml(__('Learn more')) ?>
+                <?= $lucideIcons->renderHtml('chevron-right', 'size-4', 16, 16, ['aria-hidden' => 'true']) ?>
+            </a>
+        </div>
+    <?php endforeach; ?>
+</section>

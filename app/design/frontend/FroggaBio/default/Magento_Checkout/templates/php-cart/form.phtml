@@ -1,0 +1,185 @@
+<?php
+/**
+ * FroggaBio cart items: promotion banner, items table, actions and quick order by catalogue #.
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\HyvaCsp;
+use Hyva\Theme\ViewModel\LucideIcons;
+use Hyva\Theme\ViewModel\ProductPage;
+use Magento\Checkout\Block\Cart\Grid;
+use Magento\Checkout\ViewModel\Cart as CartViewModel;
+use Magento\Framework\Escaper;
+
+/** @var Grid $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+/** @var HyvaCsp $hyvaCsp */
+
+/** @var CartViewModel $cartViewModel */
+$cartViewModel = $viewModels->require(CartViewModel::class);
+
+/** @var LucideIcons $lucideIcons */
+$lucideIcons = $viewModels->require(LucideIcons::class);
+
+/** @var ProductPage $productViewModel */
+$productViewModel = $viewModels->require(ProductPage::class);
+
+$discountTotal = $block->getQuote()->getTotals()['discount'] ?? null;
+$discountAmount = $discountTotal ? abs((float) $discountTotal->getValue()) : 0.0;
+$discountTitle = $discountTotal ? (string) $discountTotal->getTitle() : '';
+if (preg_match('/^Discount \((.+)\)$/', $discountTitle, $matches)) {
+    $discountTitle = $matches[1];
+}
+
+$outlineButton = 'inline-flex h-11 items-center justify-center rounded-md border border-border-strong px-5 text-sm'
+    . ' font-semibold text-foreground transition-colors hover:bg-muted focus-ring';
+?>
+<script>
+    function initQuickOrder() {
+        return {
+            sku: '',
+            qty: 1,
+            busy: false,
+            submit() {
+                const sku = this.sku.trim();
+                if (!sku || this.busy) {
+                    return;
+                }
+                this.busy = true;
+                const query = '{ products(filter: { sku: { eq: ' + JSON.stringify(sku) + ' } }) { items { id url_key url_suffix __typename } } }';
+                fetch(BASE_URL + 'graphql', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query })
+                })
+                    .then((response) => response.json())
+                    .then((result) => {
+                        const product = result.data && result.data.products.items[0];
+                        if (!product) {
+                            window.dispatchMessages && window.dispatchMessages([{
+                                type: 'error',
+                                text: hyva.str('<?= $escaper->escapeJs(__('No product found with catalogue # "%1".')) ?>', sku)
+                            }], 5000);
+                            return;
+                        }
+                        if (product.__typename !== 'SimpleProduct' && product.__typename !== 'VirtualProduct') {
+                            window.location.href = BASE_URL + product.url_key + (product.url_suffix || '');
+                            return;
+                        }
+                        const form = this.$refs.addForm;
+                        form.elements.product.value = product.id;
+                        form.elements.qty.value = this.qty;
+                        hyva.postCart(form);
+                        window.dispatchEvent(new CustomEvent('reload-customer-section-data'));
+                    })
+                    .finally(() => {
+                        this.busy = false;
+                    });
+            }
+        }
+    }
+
+    function initCartItemQty() {
+        return {
+            changeQty() {
+                const input = this.$refs.qty;
+                const step = Number(input.step) || 1;
+                const min = Number(input.min) || step;
+                const max = Number(input.max) || Infinity;
+                const next = Number(input.value) + Number(this.$el.dataset.delta) * step;
+                input.value = Math.min(max, Math.max(min, next));
+                input.form.requestSubmit();
+            },
+            submitQty() {
+                this.$refs.qty.form.requestSubmit();
+            }
+        }
+    }
+
+    window.addEventListener('alpine:init', () => {
+        Alpine.data('initQuickOrder', initQuickOrder);
+        Alpine.data('initCartItemQty', initCartItemQty);
+    }, { once: true })
+</script>
+<?php $hyvaCsp->registerInlineScript() ?>
+
+<?php if ($discountAmount > 0): ?>
+    <div class="flex items-center gap-3 rounded-lg bg-surface-mint p-4 text-sm">
+        <?= $lucideIcons->renderHtml('gift', 'size-5 shrink-0 text-primary', 20, 20, ['aria-hidden' => 'true']) ?>
+        <div>
+            <p class="font-extrabold"><?= $escaper->escapeHtml($discountTitle) ?></p>
+            <p class="text-xs text-muted-foreground">
+                <?= $escaper->escapeHtml(__('You save %1 on this order.', strip_tags($productViewModel->format($discountAmount, false)))) ?>
+            </p>
+        </div>
+    </div>
+<?php endif; ?>
+
+<?= $block->getChildHtml('form_before') ?>
+<form
+    id="form-validate"
+    class="form form-cart grid gap-5"
+    action="<?= $escaper->escapeUrl($block->getUrl('checkout/cart/updatePost')) ?>"
+    method="post"
+    @submit.prevent="postCart"
+>
+    <?= $block->getBlockHtml('formkey') ?>
+    <fieldset id="shopping-cart-table" class="rounded-lg border border-border bg-card">
+        <legend class="sr-only"><?= $escaper->escapeHtml(__('Shopping Cart Items')) ?></legend>
+        <div class="hidden grid-cols-[1fr_8rem_7rem_2.5rem] border-b border-border px-5 py-3 text-[10px] font-extrabold uppercase text-muted-foreground sm:grid" aria-hidden="true">
+            <span><?= $escaper->escapeHtml(__('Product')) ?></span>
+            <span><?= $escaper->escapeHtml(__('Quantity')) ?></span>
+            <span class="text-right"><?= $escaper->escapeHtml(__('Total')) ?></span>
+            <span></span>
+        </div>
+        <?php foreach ($block->getItems() as $item): ?>
+            <?= $block->getItemHtml($item) ?>
+        <?php endforeach ?>
+    </fieldset>
+    <?php if ($block->getPagerHtml()): ?>
+        <div class="toolbar cart-products-toolbar"><?= $block->getPagerHtml() ?></div>
+    <?php endif ?>
+
+    <div class="flex flex-wrap justify-between gap-3">
+        <a href="<?= $escaper->escapeUrl($block->getContinueShoppingUrl() ?: $block->getBaseUrl()) ?>" class="<?= $outlineButton ?>">
+            <?= $escaper->escapeHtml(__('← Continue shopping')) ?>
+        </a>
+        <div class="flex flex-wrap gap-2">
+            <?php if ($cartViewModel->isClearShoppingCartEnabled()): ?>
+                <?= $block->getChildHtml('checkout.cart.form.clear') ?>
+            <?php endif ?>
+            <?= $block->getChildHtml('checkout.cart.order.actions') ?>
+            <a href="<?= $escaper->escapeUrl($block->getUrl('contact')) ?>" class="<?= $outlineButton ?>">
+                <?= $escaper->escapeHtml(__('Convert cart to quote')) ?>
+            </a>
+        </div>
+    </div>
+</form>
+<?= $block->getChildHtml('shopping.cart.table.after') ?>
+
+<div x-data="initQuickOrder">
+<form class="rounded-lg border border-border bg-card p-5" @submit.prevent="submit">
+    <h2 class="font-extrabold"><?= $escaper->escapeHtml(__('Quick order by catalogue #')) ?></h2>
+    <div class="mt-3 grid gap-3 sm:grid-cols-[1fr_6rem_auto]">
+        <input type="text" required x-model="sku"
+               placeholder="<?= $escaper->escapeHtmlAttr(__('e.g. FT200-RS')) ?>"
+               aria-label="<?= $escaper->escapeHtmlAttr(__('Catalogue #')) ?>"
+               class="h-11 rounded-md border border-border bg-background px-3 text-sm"
+        />
+        <input type="number" min="1" required x-model.number="qty"
+               aria-label="<?= $escaper->escapeHtmlAttr(__('Quantity')) ?>"
+               class="h-11 rounded-md border border-border bg-background px-3 text-sm"
+        />
+        <button type="submit" :disabled="busy"
+                class="inline-flex h-11 items-center justify-center rounded-md bg-primary px-5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-hover disabled:opacity-50 focus-ring"
+        ><?= $escaper->escapeHtml(__('Add to cart')) ?></button>
+    </div>
+</form>
+<form x-ref="addForm" class="hidden" method="post" action="<?= $escaper->escapeUrl($block->getUrl('checkout/cart/add')) ?>" aria-hidden="true">
+    <input type="hidden" name="product" value="">
+    <input type="hidden" name="qty" value="1">
+</form>
+</div>

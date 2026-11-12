@@ -1,0 +1,220 @@
+<?php
+/**
+ * FroggaBio header for the Luma checkout theme.
+ * Same markup and content as the Hyvä header (FroggaBio/default html/header.phtml), without Alpine:
+ * dropdowns open on hover/focus, the region picker and mobile menu use <details>.
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\LucideIcons;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+use Magento\Framework\View\Helper\SecureHtmlRenderer;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+/** @var SecureHtmlRenderer $secureRenderer */
+
+/** @var LucideIcons $lucideIcons */
+$lucideIcons = $viewModels->require(LucideIcons::class);
+$icon = fn(string $name, int $size = 16, string $class = ''): string
+    => $lucideIcons->renderHtml($name, $class, $size, $size, ['aria-hidden' => 'true']);
+
+$searchUrl = fn(string $term): string => $block->getUrl('catalogsearch/result', ['_query' => ['q' => $term]]);
+
+$productGroups = [
+    'Consumables' => ['Bottles', 'Cell Culture', 'Cleanroom', 'Conical Tubes', 'Cryogenic Storage & Accessories',
+        'Cryovials', 'Cuvettes', 'Deep Well Plates', 'Filter Tips', 'Gloves', 'Homogenizer Kits & Accessories',
+        'Ice Containers', 'Microcentrifuge Tubes', 'Microplates'],
+    'Instruments' => ['Automation', 'Balances', 'Bottletop Dispensers', 'Cell Counters', 'Centrifuges',
+        'Cryogenic Flasks', 'Dry-Baths', 'Dry-Ice Maker', 'Fluorometers', 'Gel Imagers', 'Homogenizers',
+        'Hotplates Stirrers', 'Incubator', 'Injection Cells'],
+    'Reagents' => ['Agarose', 'Antibodies & Antigens', 'Assays & Detection Kits', 'Biosimilars & Small Molecules',
+        'Buffers', 'cDNA Synthesis', 'Cell Culture', 'Cells', 'CISH & FISH Probes', 'Compound Libraries',
+        'CRISPR-Cas9', 'Cytogenetics', 'Disinfectants & Decontamination', 'DNA Ladders & Electrophoresis'],
+];
+
+$specialtyMenus = [
+    'Cryo Solutions' => ['Automation', 'Cryo Freezers', 'Sample Cooling & Freezing Systems', 'Sample Handling',
+        'Sample Tubes'],
+    'Microscopes' => ['Confocal Microscopes', 'Educational Microscopes', 'Inverted Microscopes', 'Live Cell Imaging',
+        'Stereo Microscopes', 'Upright Microscopes', 'Microscope Accessories', 'Microscope Cameras'],
+    'Pathology' => ['Gross Pathology', 'Sample Preparation', 'Frozen Tissue', 'Tissue Processing', 'Microtomy',
+        'Digital Pathology', 'Tissue Microarrays', 'Staining', 'Primary Antibodies', 'IHC Reagents',
+        'Consumables & Accessories'],
+];
+
+$regions = ['Global', 'Canada', 'US'];
+
+$homeUrl = $block->getBaseUrl();
+$contactUrl = $block->getUrl('contact');
+$accountUrl = $block->getUrl('customer/account');
+$quoteUrl = $contactUrl;
+$resultUrl = $block->getUrl('catalogsearch/result');
+?>
+<div class="fb-header">
+    <div class="fb-topbar">
+        <div class="fb-container fb-topbar__inner">
+            <span class="fb-topbar__text fb-topbar__text--long">●&nbsp; <?= $escaper->escapeHtml(__('Proudly Canadian · Life Science, Pathology & Microscopy Supplies')) ?></span>
+            <span class="fb-topbar__text fb-topbar__text--short">●&nbsp; <?= $escaper->escapeHtml(__('Proudly Canadian')) ?></span>
+            <div class="fb-topbar__right">
+                <details class="fb-region">
+                    <summary><?= $escaper->escapeHtml($regions[0]) ?> <?= $icon('chevron-down', 12) ?></summary>
+                    <ul role="listbox" aria-label="<?= $escaper->escapeHtmlAttr(__('Choose your region')) ?>">
+                        <?php foreach ($regions as $region): ?>
+                            <li role="option"><?= $escaper->escapeHtml($region) ?></li>
+                        <?php endforeach; ?>
+                    </ul>
+                </details>
+                <a class="fb-topbar__link" href="<?= $escaper->escapeUrl($block->getUrl('customer/account/login')) ?>"><?= $escaper->escapeHtml(__('Sign in')) ?></a>
+                <a class="fb-topbar__link" href="<?= $escaper->escapeUrl($block->getUrl('customer/account/create')) ?>"><?= $escaper->escapeHtml(__('Create account')) ?></a>
+            </div>
+        </div>
+    </div>
+
+    <div class="fb-container fb-mainrow">
+        <a class="fb-logo" href="<?= $escaper->escapeUrl($homeUrl) ?>" aria-label="<?= $escaper->escapeHtmlAttr(__('FroggaBio home')) ?>">
+            <img src="<?= $escaper->escapeUrl($block->getViewFileUrl('images/froggabio-logo.png')) ?>" alt="FroggaBio Inc." width="768" height="181"/>
+        </a>
+
+        <form class="fb-search" action="<?= $escaper->escapeUrl($resultUrl) ?>" method="get" role="search">
+            <?= $icon('search', 16, 'fb-search__icon') ?>
+            <input type="search" name="q" required
+                   placeholder="<?= $escaper->escapeHtmlAttr(__('Search')) ?>"
+                   aria-label="<?= $escaper->escapeHtmlAttr(__('Search catalogue')) ?>"/>
+            <a class="fb-search__advanced" href="<?= $escaper->escapeUrl($block->getUrl('catalogsearch/advanced')) ?>"><?= $escaper->escapeHtml(__('Advanced Search')) ?></a>
+            <button type="submit" class="fb-search__button"><?= $escaper->escapeHtml(__('Search')) ?></button>
+        </form>
+
+        <div class="fb-actions">
+            <a class="fb-action fb-action--text" href="<?= $escaper->escapeUrl($block->getUrl('catalog/product_compare')) ?>">
+                <?= $icon('git-compare-arrows') ?><?= $escaper->escapeHtml(__('Compare')) ?>
+            </a>
+            <a class="fb-action fb-action--text" href="<?= $escaper->escapeUrl($quoteUrl) ?>">
+                <?= $icon('file-text') ?><?= $escaper->escapeHtml(__('My Quote')) ?>
+            </a>
+            <a class="fb-action fb-action--icon" href="<?= $escaper->escapeUrl($accountUrl) ?>" aria-label="<?= $escaper->escapeHtmlAttr(__('My account')) ?>">
+                <?= $icon('user-round', 20) ?>
+            </a>
+            <a class="fb-cart" href="<?= $escaper->escapeUrl($block->getUrl('checkout/cart')) ?>"
+               aria-label="<?= $escaper->escapeHtmlAttr(__('My cart')) ?>"
+            >
+                <?= $icon('shopping-cart') ?>
+                <span class="fb-cart__count" data-fb-cart-count aria-hidden="true">0</span>
+            </a>
+
+            <details class="fb-mobile-menu">
+                <summary aria-label="<?= $escaper->escapeHtmlAttr(__('Toggle menu')) ?>"><?= $icon('menu', 20) ?></summary>
+                <nav class="fb-mobile-menu__panel" aria-label="<?= $escaper->escapeHtmlAttr(__('Mobile navigation')) ?>">
+                    <form class="fb-search fb-search--mobile" action="<?= $escaper->escapeUrl($resultUrl) ?>" method="get" role="search">
+                        <input type="search" name="q" required
+                               placeholder="<?= $escaper->escapeHtmlAttr(__('Search')) ?>"
+                               aria-label="<?= $escaper->escapeHtmlAttr(__('Search catalogue')) ?>"/>
+                        <button type="submit" class="fb-search__button" aria-label="<?= $escaper->escapeHtmlAttr(__('Search')) ?>"><?= $icon('search') ?></button>
+                    </form>
+                    <details>
+                        <summary><?= $escaper->escapeHtml(__('Products')) ?> <?= $icon('chevron-down') ?></summary>
+                        <div class="fb-mobile-menu__sub">
+                            <?php foreach ($productGroups as $groupName => $items): ?>
+                                <a class="fb-mobile-menu__group" href="<?= $escaper->escapeUrl($searchUrl($groupName)) ?>"><?= $escaper->escapeHtml(__($groupName)) ?></a>
+                                <?php foreach ($items as $item): ?>
+                                    <a href="<?= $escaper->escapeUrl($searchUrl($item)) ?>"><?= $escaper->escapeHtml(__($item)) ?></a>
+                                <?php endforeach; ?>
+                            <?php endforeach; ?>
+                        </div>
+                    </details>
+                    <?php foreach ($specialtyMenus as $menuName => $items): ?>
+                        <details>
+                            <summary><?= $escaper->escapeHtml(__($menuName)) ?> <?= $icon('chevron-down') ?></summary>
+                            <div class="fb-mobile-menu__sub">
+                                <?php foreach ($items as $item): ?>
+                                    <a href="<?= $escaper->escapeUrl($searchUrl($item)) ?>"><?= $escaper->escapeHtml(__($item)) ?></a>
+                                <?php endforeach; ?>
+                            </div>
+                        </details>
+                    <?php endforeach; ?>
+                    <?php foreach ([[__('Promotions'), $homeUrl], [__('Contact us'), $contactUrl], [__('Request a quote'), $quoteUrl], [__('My account'), $accountUrl]] as [$label, $url]): ?>
+                        <a class="fb-mobile-menu__link" href="<?= $escaper->escapeUrl($url) ?>"><?= $escaper->escapeHtml($label) ?></a>
+                    <?php endforeach; ?>
+                </nav>
+            </details>
+        </div>
+    </div>
+
+    <nav class="fb-nav" aria-label="<?= $escaper->escapeHtmlAttr(__('Main navigation')) ?>">
+        <div class="fb-container fb-nav__inner">
+            <div class="fb-nav__item">
+                <button type="button" class="fb-nav__link" aria-haspopup="true"><?= $escaper->escapeHtml(__('Products')) ?> <?= $icon('chevron-down', 12) ?></button>
+                <div class="fb-mega">
+                    <div class="fb-container fb-mega__groups">
+                        <?php foreach ($productGroups as $groupName => $items): ?>
+                            <section>
+                                <div class="fb-mega__group-head">
+                                    <h2><?= $escaper->escapeHtml(__($groupName)) ?></h2>
+                                    <a href="<?= $escaper->escapeUrl($searchUrl($groupName)) ?>"><?= $escaper->escapeHtml(__('View all')) ?></a>
+                                </div>
+                                <ul>
+                                    <?php foreach ($items as $item): ?>
+                                        <li><a href="<?= $escaper->escapeUrl($searchUrl($item)) ?>"><?= $escaper->escapeHtml(__($item)) ?></a></li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            </section>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+            </div>
+            <?php foreach ($specialtyMenus as $menuName => $items): ?>
+                <div class="fb-nav__item">
+                    <button type="button" class="fb-nav__link" aria-haspopup="true"><?= $escaper->escapeHtml(__($menuName)) ?> <?= $icon('chevron-down', 12) ?></button>
+                    <div class="fb-mega">
+                        <div class="fb-container fb-mega__specialty">
+                            <div class="fb-mega__specialty-head">
+                                <div>
+                                    <p><?= $escaper->escapeHtml(__('Shop by category')) ?></p>
+                                    <h2><?= $escaper->escapeHtml(__($menuName)) ?></h2>
+                                </div>
+                                <a href="<?= $escaper->escapeUrl($searchUrl($menuName)) ?>"><?= $escaper->escapeHtml(__('View all %1', __($menuName))) ?></a>
+                            </div>
+                            <div class="fb-mega__specialty-items">
+                                <?php foreach ($items as $item): ?>
+                                    <a href="<?= $escaper->escapeUrl($searchUrl($item)) ?>"><?= $escaper->escapeHtml(__($item)) ?></a>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+            <a class="fb-nav__link" href="<?= $escaper->escapeUrl($homeUrl) ?>"><?= $escaper->escapeHtml(__('Promotions')) ?></a>
+            <a class="fb-nav__link" href="<?= $escaper->escapeUrl($contactUrl) ?>"><?= $escaper->escapeHtml(__('Contact us')) ?></a>
+            <a class="fb-nav__link fb-nav__link--quote" href="<?= $escaper->escapeUrl($quoteUrl) ?>"><?= $escaper->escapeHtml(__('Request a quote')) ?></a>
+        </div>
+    </nav>
+</div>
+<?php
+// Cart count: the quote total from checkoutConfig right away, then Luma's customer-data "cart" section.
+$cartCountScript = <<<JS
+require(['Magento_Customer/js/customer-data'], function (customerData) {
+    var counter = document.querySelector('[data-fb-cart-count]');
+    var cart = customerData.get('cart');
+    var setCount = function (count) {
+        counter.textContent = Math.round(Number(count) || 0);
+    };
+    var quote = window.checkoutConfig && window.checkoutConfig.quoteData;
+    if (quote) {
+        setCount(quote.items_qty);
+    }
+    if (cart() && cart().summary_count !== undefined) {
+        setCount(cart().summary_count);
+    }
+    cart.subscribe(function (data) {
+        if (data && data.summary_count !== undefined) {
+            setCount(data.summary_count);
+        }
+    });
+});
+JS;
+?>
+<?= /* @noEscape */ $secureRenderer->renderTag('script', [], $cartCountScript, false) ?>

@@ -1,0 +1,101 @@
+<?php
+/**
+ * Homepage "Product highlights" carousel.
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\HyvaCsp;
+use Hyva\Theme\ViewModel\LucideIcons;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+/** @var HyvaCsp $hyvaCsp */
+
+/** @var LucideIcons $lucideIcons */
+$lucideIcons = $viewModels->require(LucideIcons::class);
+
+$searchUrl = fn(string $term): string => $block->getUrl('catalogsearch/result', ['_query' => ['q' => $term]]);
+
+$products = [
+    ['category' => __('Cryo solutions'), 'name' => 'Ultra Low Temperature Freezers', 'image' => 'images/home/ultra-low-freezer.jpg', 'featured' => true],
+    ['category' => __('Pathology'), 'name' => 'AS-410M Auto Slide Preparation System', 'image' => 'images/home/slide-stainer.jpg'],
+    ['category' => __('Microscopes'), 'name' => 'Ultra HD Digital Clinical Microscope', 'image' => 'images/home/digital-microscope.jpg'],
+    ['category' => __('Instruments'), 'name' => 'Gilson Pipettes', 'image' => 'images/home/nitrile-gloves.jpg'],
+    ['category' => __('Instruments'), 'name' => 'CellDrop Automated Cell Counter', 'image' => 'images/home/slide-stainer.jpg'],
+    ['category' => __('Pathology'), 'name' => 'Pannoramic Digital Slide Scanners', 'image' => 'images/home/digital-microscope.jpg'],
+    ['category' => __('Instruments'), 'name' => 'qPCR System 96 × 0.2 ml, 5 Channels', 'image' => 'images/home/ultra-low-freezer.jpg'],
+];
+
+$arrowButton = 'absolute top-1/2 z-20 grid size-10 -translate-y-1/2 place-items-center rounded-full border'
+    . ' border-border-strong bg-card/95 text-foreground shadow-md backdrop-blur-sm transition-colors hover:bg-muted'
+    . ' focus-ring';
+?>
+<script>
+    function initHomeHighlights() {
+        return {
+            scrollByCard() {
+                const track = this.$refs.track;
+                const card = track.querySelector('article');
+                const step = card ? card.offsetWidth + 16 : track.clientWidth;
+                track.scrollBy({ left: Number(this.$el.dataset.direction) * step, behavior: 'smooth' });
+            }
+        }
+    }
+
+    window.addEventListener('alpine:init', () => {
+        Alpine.data('initHomeHighlights', initHomeHighlights);
+    }, { once: true })
+</script>
+<?php $hyvaCsp->registerInlineScript() ?>
+
+<section id="highlights" class="container-site py-8 sm:py-10">
+    <div class="mb-6">
+        <p class="text-xs font-extrabold uppercase text-primary"><?= $escaper->escapeHtml(__('Product highlights')) ?></p>
+        <h2 class="mt-2 text-3xl font-extrabold sm:text-4xl"><?= $escaper->escapeHtml(__('Featured instruments & solutions')) ?></h2>
+    </div>
+    <div class="relative" x-data="initHomeHighlights">
+        <button type="button" class="<?= $arrowButton ?> left-2" data-direction="-1" @click="scrollByCard"
+                aria-label="<?= $escaper->escapeHtmlAttr(__('Previous products')) ?>"
+        ><?= $lucideIcons->renderHtml('chevron-left', 'size-4', 16, 16, ['aria-hidden' => 'true']) ?></button>
+        <button type="button" class="<?= $arrowButton ?> right-2" data-direction="1" @click="scrollByCard"
+                aria-label="<?= $escaper->escapeHtmlAttr(__('Next products')) ?>"
+        ><?= $lucideIcons->renderHtml('chevron-right', 'size-4', 16, 16, ['aria-hidden' => 'true']) ?></button>
+
+        <div class="scrollbar-none flex snap-x snap-mandatory gap-4 overflow-x-auto" x-ref="track">
+            <?php foreach ($products as $product): ?>
+                <article class="group w-[calc(50%-0.5rem)] shrink-0 snap-start overflow-hidden rounded-md border border-border bg-card sm:w-[calc(33.333%-0.67rem)] lg:w-[calc(25%-0.75rem)]">
+                    <div class="relative aspect-[4/3] overflow-hidden bg-surface-soft">
+                        <img src="<?= $escaper->escapeUrl($block->getViewFileUrl($product['image'])) ?>"
+                             alt="<?= $escaper->escapeHtmlAttr($product['name']) ?>"
+                             width="1200"
+                             height="912"
+                             loading="lazy"
+                             class="size-full object-cover transition duration-500 group-hover:scale-[1.03]"
+                        />
+                        <a href="<?= $escaper->escapeUrl($block->getUrl('wishlist')) ?>"
+                           class="absolute right-3 top-3 grid size-9 place-items-center rounded-full bg-card text-foreground shadow-sm"
+                           aria-label="<?= $escaper->escapeHtmlAttr(__('Save %1', $product['name'])) ?>"
+                        ><?= $lucideIcons->renderHtml('heart', 'size-4', 16, 16, ['aria-hidden' => 'true']) ?></a>
+                    </div>
+                    <div class="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-3 p-5">
+                        <div class="min-w-0">
+                            <p class="text-[10px] font-extrabold uppercase text-primary"><?= $escaper->escapeHtml($product['category']) ?></p>
+                            <h3 class="mt-2 truncate text-sm font-extrabold leading-snug" title="<?= $escaper->escapeHtmlAttr($product['name']) ?>">
+                                <?= $escaper->escapeHtml($product['name']) ?>
+                            </h3>
+                        </div>
+                        <a href="<?= $escaper->escapeUrl($searchUrl($product['name'])) ?>"
+                           class="grid size-10 shrink-0 place-items-center rounded-md transition-colors focus-ring <?= !empty($product['featured']) ? 'bg-primary text-primary-foreground hover:bg-primary-hover' : 'text-foreground hover:bg-muted' ?>"
+                           aria-label="<?= $escaper->escapeHtmlAttr(__('Explore %1', $product['name'])) ?>"
+                        ><?= $lucideIcons->renderHtml('arrow-right', 'size-4', 16, 16, ['aria-hidden' => 'true']) ?></a>
+                    </div>
+                </article>
+            <?php endforeach; ?>
+        </div>
+    </div>
+</section>

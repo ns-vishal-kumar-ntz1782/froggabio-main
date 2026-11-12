@@ -9,3 +9,6 @@
 @import "./page-customer.css";
 @import "./page-catalog.css";
 @import "./page-builder.css";
+
+@import "./pdp.css";
+@import "./cart.css";

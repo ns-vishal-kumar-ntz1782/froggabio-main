@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * BSS Commerce Co.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://bsscommerce.com/Bss-Commerce-License.txt
+ *
+ * @category   BSS
+ * @package    Bss_GeoIPAutoSwitchStore
+ * @author     Extension Team
+ * @copyright  Copyright (c) 2016-2022 BSS Commerce Co. ( http://bsscommerce.com )
+ * @license    http://bsscommerce.com/Bss-Commerce-License.txt
+ */
+-->
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="bss_geoip_maxmind_v4" resource="default" engine="innodb" comment="Database of Country IPv4 from MaxMind">
+        <column xsi:type="int" name="geoip_id" padding="10" unsigned="true" nullable="false" identity="true" comment="GeoIP Id"/>
+        <column xsi:type="varchar" name="network" nullable="false" length="255" comment="Network"/>
+        <column xsi:type="int" name="geoname_id" padding="11" unsigned="false" nullable="false" identity="false" comment="Geoname ID"/>
+        <column xsi:type="varchar" name="begin_ip" nullable="false" length="255" comment="Begin IP"/>
+        <column xsi:type="varchar" name="end_ip" nullable="false" length="255" comment="End IP"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="geoip_id"/>
+        </constraint>
+        <index referenceId="BSS_GEOIP_MAXMIND_V4_GEOIP_ID" indexType="btree">
+            <column name="geoip_id"/>
+        </index>
+    </table>
+    <table name="bss_geoip_maxmind_v6" resource="default" engine="innodb" comment="Database of Country IPv6 from MaxMind">
+        <column xsi:type="int" name="geoip_id" padding="10" unsigned="true" nullable="false" identity="true" comment="GeoIP Id"/>
+        <column xsi:type="varchar" name="network" nullable="false" length="255" comment="Network"/>
+        <column xsi:type="int" name="geoname_id" padding="11" unsigned="false" nullable="false" identity="false" comment="Geoname ID"/>
+        <column xsi:type="varchar" name="begin_ip" nullable="false" length="255" comment="Begin IP"/>
+        <column xsi:type="varchar" name="end_ip" nullable="false" length="255" comment="End IP"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="geoip_id"/>
+        </constraint>
+        <index referenceId="BSS_GEOIP_MAXMIND_V6_GEOIP_ID" indexType="btree">
+            <column name="geoip_id"/>
+        </index>
+    </table>
+    <table name="bss_geoip_maxmind_locations" resource="default" engine="innodb" comment="Database of Country Locations">
+        <column xsi:type="int" name="local_id" padding="10" unsigned="true" nullable="false" identity="true" comment="Locations Id"/>
+        <column xsi:type="int" name="geoname_id" padding="11" unsigned="false" nullable="false" identity="false" comment="Geoname ID"/>
+        <column xsi:type="varchar" name="locale_code" nullable="false" length="255" comment="Locale Code"/>
+        <column xsi:type="varchar" name="continent_code" nullable="false" length="255" comment="Continent Code"/>
+        <column xsi:type="varchar" name="continent_name" nullable="false" length="255" comment="Continent Name"/>
+        <column xsi:type="varchar" name="country_iso_code" nullable="false" length="255" comment="Contry ISO code"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="local_id"/>
+        </constraint>
+        <index referenceId="BSS_GEOIP_MAXMIND_LOCATIONS_LOCAL_ID" indexType="btree">
+            <column name="local_id"/>
+        </index>
+    </table>
+    <table name="bss_geo_ip" resource="default" engine="innodb" comment="Database of GeoIP Config">
+        <column xsi:type="int" name="geoip_id" padding="10" unsigned="true" nullable="false" identity="true" comment="GeoIP Id"/>
+        <column xsi:type="varchar" name="geoip_type" nullable="false" length="255" comment="GeoType"/>
+        <column xsi:type="varchar" name="geoip_value" nullable="false" length="255" comment="Value"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="geoip_id"/>
+        </constraint>
+        <index referenceId="BSS_GEO_IP_GEOIP_ID" indexType="btree">
+            <column name="geoip_id"/>
+        </index>
+    </table>
+    <table name="bss_geoip_maxmind" disabled="true" resource="default"/>
+    <table name="bss_geoip_maxmind_ipv6" disabled="true" resource="default"/>
+</schema>

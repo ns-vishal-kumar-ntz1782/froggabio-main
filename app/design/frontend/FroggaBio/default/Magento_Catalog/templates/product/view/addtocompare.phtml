@@ -1,0 +1,80 @@
+<?php
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\CurrentProduct;
+use Hyva\Theme\ViewModel\LucideIcons;
+use Hyva\Theme\ViewModel\ProductCompare;
+use Magento\Catalog\Model\Product;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var ProductCompare $compareViewModel */
+$compareViewModel = $viewModels->require(ProductCompare::class);
+
+/** @var LucideIcons $lucideIcons */
+$lucideIcons = $viewModels->require(LucideIcons::class);
+
+/** @var CurrentProduct $currentProduct */
+$currentProduct = $viewModels->require(CurrentProduct::class);
+
+/** @var Product $product */
+$product = $currentProduct->get();
+
+if (!$product->getId() || !$compareViewModel->showOnProductPage()) {
+    return;
+}
+?>
+<script>
+    function initCompareOnProductView() {
+        return {
+            addToCompare: function (productId) {
+                const formKey = hyva.getFormKey();
+                const postUrl = BASE_URL + 'catalog/product_compare/add/';
+
+                fetch(postUrl, {
+                    "headers": {
+                        "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+                    },
+                    "body": "form_key=" + formKey + "&product=" + productId + "&uenc=" + hyva.getUenc(),
+                    "method": "POST",
+                    "mode": "cors",
+                    "credentials": "include"
+                }).then(function (response) {
+                    if (response.redirected) {
+                        window.location.href = response.url;
+                    }
+                }).catch(function (error) {
+                    typeof window.dispatchMessages !== "undefined" && window.dispatchMessages(
+                        [{
+                            type: "error",
+                            text: error
+                        }], 5000
+                    );
+                });
+            }
+        };
+    }
+</script>
+
+<button x-data="initCompareOnProductView()"
+        @click.prevent="addToCompare(<?= (int)$product->getId() ?>)"
+        title="<?= $escaper->escapeHtmlAttr(__('Add to Compare')) ?>"
+        aria-label="<?= $escaper->escapeHtmlAttr(__('Add to Compare')) ?>"
+        id="add-to-compare"
+        class="flex items-center gap-1 hover:underline"
+        data-addto="compare"
+>
+    <?= $lucideIcons->renderHtml('git-compare-arrows', 'size-4', 16, 16, ['aria-hidden' => 'true']) ?>
+    <?= $escaper->escapeHtml(__('Compare')) ?>
+</button>

@@ -1,0 +1,41 @@
+<?php
+/**
+ * Homepage pathology spotlight banner.
+ */
+
+declare(strict_types=1);
+
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+?>
+<section id="quote" class="container-site py-8 sm:py-10">
+    <div class="grid overflow-hidden rounded-lg bg-surface-mint lg:grid-cols-[0.9fr_1.1fr]">
+        <img src="<?= $escaper->escapeUrl($block->getViewFileUrl('images/home/slide-stainer.jpg')) ?>"
+             alt="<?= $escaper->escapeHtmlAttr(__('Automated slide staining instrument')) ?>"
+             width="1200"
+             height="912"
+             loading="lazy"
+             class="h-full max-h-96 w-full object-cover"
+        />
+        <div class="flex flex-col justify-center p-8 sm:p-12">
+            <p class="text-xs font-extrabold uppercase text-primary"><?= $escaper->escapeHtml(__('Pathology spotlight')) ?></p>
+            <h2 class="mt-3 max-w-xl text-3xl font-extrabold leading-tight sm:text-4xl">
+                <?= $escaper->escapeHtml(__('Dakewe DP360 — fully automated slide staining')) ?>
+            </h2>
+            <p class="mt-4 max-w-xl text-sm leading-6 text-muted-foreground">
+                <?= $escaper->escapeHtml(__('Learn more about the DP360 and how automated staining fits your histology workflow.')) ?>
+            </p>
+            <div class="mt-7 flex flex-wrap gap-3">
+                <a href="<?= $escaper->escapeUrl($block->getUrl('catalogsearch/result', ['_query' => ['q' => 'DP360']])) ?>"
+                   class="inline-flex h-11 items-center justify-center rounded-md bg-primary px-5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-hover focus-ring"
+                ><?= $escaper->escapeHtml(__('Learn more')) ?></a>
+                <a href="<?= $escaper->escapeUrl($block->getUrl('contact')) ?>"
+                   class="inline-flex h-11 items-center justify-center rounded-md border border-border-strong px-5 text-sm font-semibold text-foreground transition-colors hover:bg-muted focus-ring"
+                ><?= $escaper->escapeHtml(__('Request a quote')) ?></a>
+            </div>
+        </div>
+    </div>
+</section>

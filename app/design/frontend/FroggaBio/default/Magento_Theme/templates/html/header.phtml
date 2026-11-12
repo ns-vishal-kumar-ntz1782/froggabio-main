@@ -1,0 +1,429 @@
+<?php
+/**
+ * FroggaBio header: top bar, logo/search/actions row and mega-menu navigation.
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\HyvaCsp;
+use Hyva\Theme\ViewModel\LucideIcons;
+use Hyva\Theme\ViewModel\StoreConfig;
+use Magento\Checkout\Block\Cart\Sidebar as SidebarCart;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Escaper $escaper */
+/** @var Template $block */
+/** @var ViewModelRegistry $viewModels */
+/** @var HyvaCsp $hyvaCsp */
+
+/** @var LucideIcons $lucideIcons */
+$lucideIcons = $viewModels->require(LucideIcons::class);
+
+/** @var StoreConfig $storeConfig */
+$storeConfig = $viewModels->require(StoreConfig::class);
+$showMiniCart = $storeConfig->getStoreConfig(SidebarCart::XML_PATH_CHECKOUT_SIDEBAR_DISPLAY);
+
+// Until the catalog has categories, menu items link to a catalogue search for their name.
+$searchUrl = fn(string $term): string => $block->getUrl('catalogsearch/result', ['_query' => ['q' => $term]]);
+
+$productGroups = [
+    'Consumables' => ['Bottles', 'Cell Culture', 'Cleanroom', 'Conical Tubes', 'Cryogenic Storage & Accessories',
+        'Cryovials', 'Cuvettes', 'Deep Well Plates', 'Filter Tips', 'Gloves', 'Homogenizer Kits & Accessories',
+        'Ice Containers', 'Microcentrifuge Tubes', 'Microplates'],
+    'Instruments' => ['Automation', 'Balances', 'Bottletop Dispensers', 'Cell Counters', 'Centrifuges',
+        'Cryogenic Flasks', 'Dry-Baths', 'Dry-Ice Maker', 'Fluorometers', 'Gel Imagers', 'Homogenizers',
+        'Hotplates Stirrers', 'Incubator', 'Injection Cells'],
+    'Reagents' => ['Agarose', 'Antibodies & Antigens', 'Assays & Detection Kits', 'Biosimilars & Small Molecules',
+        'Buffers', 'cDNA Synthesis', 'Cell Culture', 'Cells', 'CISH & FISH Probes', 'Compound Libraries',
+        'CRISPR-Cas9', 'Cytogenetics', 'Disinfectants & Decontamination', 'DNA Ladders & Electrophoresis'],
+];
+
+$specialtyMenus = [
+    'Cryo Solutions' => ['Automation', 'Cryo Freezers', 'Sample Cooling & Freezing Systems', 'Sample Handling',
+        'Sample Tubes'],
+    'Microscopes' => ['Confocal Microscopes', 'Educational Microscopes', 'Inverted Microscopes', 'Live Cell Imaging',
+        'Stereo Microscopes', 'Upright Microscopes', 'Microscope Accessories', 'Microscope Cameras'],
+    'Pathology' => ['Gross Pathology', 'Sample Preparation', 'Frozen Tissue', 'Tissue Processing', 'Microtomy',
+        'Digital Pathology', 'Tissue Microarrays', 'Staining', 'Primary Antibodies', 'IHC Reagents',
+        'Consumables & Accessories'],
+];
+
+$regions = ['Global', 'Canada', 'US'];
+
+$homeUrl = $block->getBaseUrl();
+$contactUrl = $block->getUrl('contact');
+$accountUrl = $block->getUrl('customer/account');
+$quoteUrl = $contactUrl;
+$navLinkClass = 'inline-flex h-12 shrink-0 items-center gap-2 text-sm font-semibold text-foreground'
+    . ' transition-colors hover:text-primary';
+$actionClass = 'shrink-0 items-center justify-center rounded-md font-semibold text-foreground transition-colors'
+    . ' hover:bg-muted focus-ring';
+?>
+<script>
+    function initHeader() {
+        return {
+            cart: {},
+            isCartOpen: false,
+            menu: null,
+            mobileOpen: false,
+            regionOpen: false,
+            region: '<?= $escaper->escapeJs($regions[0]) ?>',
+            getData(data) {
+                this.cart = data.cart ?? {};
+            },
+            summaryCount() {
+                return this.cart.summary_count || 0;
+            },
+            cartAriaLabel() {
+                return hyva.str('<?= $escaper->escapeJs(__('My cart with %1 items')) ?>', this.summaryCount());
+            },
+            toggleCart() {
+                this.isCartOpen = this.$event.detail?.isOpen ?? true;
+                this.$dispatch('toggle-cart', { isOpen: this.isCartOpen })
+            },
+            menuName() {
+                return this.$el.closest('[data-menu]')?.dataset.menu ?? null;
+            },
+            openMenu() {
+                this.menu = this.menuName();
+            },
+            toggleMenu() {
+                const name = this.menuName();
+                this.menu = this.menu === name ? null : name;
+            },
+            closeMenu() {
+                this.menu = null;
+            },
+            isMenuOpen() {
+                return this.menu !== null && this.menu === this.menuName();
+            },
+            toggleMobile() {
+                this.mobileOpen = !this.mobileOpen;
+            },
+            toggleRegion() {
+                this.regionOpen = !this.regionOpen;
+            },
+            closeRegion() {
+                this.regionOpen = false;
+            },
+            selectRegion() {
+                this.region = this.$el.dataset.region;
+                this.regionOpen = false;
+            },
+            isSelectedRegion() {
+                return this.region === this.$el.dataset.region;
+            }
+        }
+    }
+
+    window.addEventListener('alpine:init', () => {
+        Alpine.data('initHeader', initHeader);
+    }, { once: true })
+</script>
+<?php $hyvaCsp->registerInlineScript() ?>
+
+<div id="header"
+     x-data="initHeader()"
+     @private-content-loaded.window="getData(event.detail.data)"
+     @keydown.escape.window="closeMenu"
+>
+    <!-- Top bar -->
+    <div class="bg-primary text-primary-foreground">
+        <div class="container-site flex h-8 items-center justify-between text-[11px] font-medium">
+            <span class="hidden sm:inline">●&nbsp; <?= $escaper->escapeHtml(__('Proudly Canadian · Life Science, Pathology & Microscopy Supplies')) ?></span>
+            <span class="sm:hidden">●&nbsp; <?= $escaper->escapeHtml(__('Proudly Canadian')) ?></span>
+            <div class="flex items-center gap-4">
+                <div class="relative" @click.outside="closeRegion">
+                    <button type="button"
+                            class="focus-ring flex items-center gap-1.5 rounded-sm px-1 py-0.5 hover:bg-primary-foreground/10"
+                            aria-haspopup="listbox"
+                            :aria-expanded="regionOpen"
+                            @click="toggleRegion"
+                    >
+                        <span x-text="region"><?= $escaper->escapeHtml($regions[0]) ?></span>
+                        <?= $lucideIcons->renderHtml('chevron-down', 'size-3', 12, 12, ['aria-hidden' => 'true']) ?>
+                    </button>
+                    <ul role="listbox"
+                        aria-label="<?= $escaper->escapeHtmlAttr(__('Choose your region')) ?>"
+                        class="absolute right-0 top-full z-50 mt-1 w-44 rounded-md border border-border bg-card p-1 text-xs font-semibold text-foreground shadow-xl"
+                        x-show="regionOpen"
+                        x-cloak
+                    >
+                        <?php foreach ($regions as $region): ?>
+                            <li>
+                                <button type="button"
+                                        role="option"
+                                        class="flex w-full items-center justify-between rounded-sm px-3 py-2 text-left hover:bg-muted"
+                                        data-region="<?= $escaper->escapeHtmlAttr($region) ?>"
+                                        :aria-selected="isSelectedRegion"
+                                        @click="selectRegion"
+                                ><?= $escaper->escapeHtml($region) ?></button>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                </div>
+                <div class="hidden items-center gap-4 sm:flex">
+                    <a href="<?= $escaper->escapeUrl($block->getUrl('customer/account/login')) ?>"><?= $escaper->escapeHtml(__('Sign in')) ?></a>
+                    <a href="<?= $escaper->escapeUrl($block->getUrl('customer/account/create')) ?>"><?= $escaper->escapeHtml(__('Create account')) ?></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="border-b border-border bg-card/95 backdrop-blur-md">
+        <!-- Logo, search, actions -->
+        <div class="container-site grid h-20 grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-5">
+            <a href="<?= $escaper->escapeUrl($homeUrl) ?>"
+               class="focus-ring flex shrink-0 items-center rounded-sm"
+               aria-label="<?= $escaper->escapeHtmlAttr(__('FroggaBio home')) ?>"
+            >
+                <img src="<?= $escaper->escapeUrl($block->getViewFileUrl('images/froggabio-logo.png')) ?>"
+                     alt="FroggaBio Inc."
+                     width="768"
+                     height="181"
+                     class="h-auto w-36 sm:w-40"
+                />
+            </a>
+
+            <form action="<?= $escaper->escapeUrl($block->getUrl('catalogsearch/result')) ?>"
+                  method="get"
+                  role="search"
+                  class="mx-auto hidden w-full max-w-2xl items-center rounded-full border border-input bg-surface-soft p-1 md:flex"
+            >
+                <?= $lucideIcons->renderHtml('search', 'ml-3 size-4 shrink-0 text-muted-foreground', 16, 16, ['aria-hidden' => 'true']) ?>
+                <input type="search"
+                       name="q"
+                       class="min-w-0 flex-1 border-0 bg-transparent px-4 py-1.5 text-sm shadow-none outline-hidden focus:ring-0"
+                       placeholder="<?= $escaper->escapeHtmlAttr(__('Search')) ?>"
+                       aria-label="<?= $escaper->escapeHtmlAttr(__('Search catalogue')) ?>"
+                       required
+                />
+                <a href="<?= $escaper->escapeUrl($block->getUrl('catalogsearch/advanced')) ?>"
+                   class="hidden shrink-0 px-3 text-xs font-bold text-primary lg:block"
+                ><?= $escaper->escapeHtml(__('Advanced Search')) ?></a>
+                <button type="submit"
+                        class="inline-flex h-10 shrink-0 items-center justify-center rounded-full bg-primary px-5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-hover focus-ring"
+                ><?= $escaper->escapeHtml(__('Search')) ?></button>
+            </form>
+
+            <div class="flex items-center justify-end gap-1 md:gap-2">
+                <a href="<?= $escaper->escapeUrl($block->getUrl('catalog/product_compare')) ?>"
+                   class="<?= $actionClass ?> hidden h-9 gap-2 px-2 text-xs md:inline-flex"
+                >
+                    <?= $lucideIcons->renderHtml('git-compare-arrows', 'size-4', 16, 16, ['aria-hidden' => 'true']) ?>
+                    <?= $escaper->escapeHtml(__('Compare')) ?>
+                </a>
+                <a href="<?= $escaper->escapeUrl($quoteUrl) ?>"
+                   class="<?= $actionClass ?> hidden h-9 gap-1.5 px-2 text-xs md:inline-flex"
+                >
+                    <?= $lucideIcons->renderHtml('file-text', 'size-4', 16, 16, ['aria-hidden' => 'true']) ?>
+                    <?= $escaper->escapeHtml(__('My Quote')) ?>
+                </a>
+                <a href="<?= $escaper->escapeUrl($accountUrl) ?>"
+                   class="<?= $actionClass ?> hidden size-10 p-0 xl:inline-flex"
+                   aria-label="<?= $escaper->escapeHtmlAttr(__('My account')) ?>"
+                >
+                    <?= $lucideIcons->renderHtml('user-round', 'size-5', 20, 20, ['aria-hidden' => 'true']) ?>
+                </a>
+
+                <?php if ($showMiniCart): ?>
+                    <button type="button" @click="toggleCart"
+                <?php else: ?>
+                    <a href="<?= $escaper->escapeUrl($block->getUrl('checkout/cart')) ?>"
+                <?php endif ?>
+                    id="menu-cart-icon"
+                    x-ref="cartButton"
+                    class="<?= $actionClass ?> relative inline-flex h-9 gap-1.5 bg-surface-mint px-2.5 text-xs"
+                    aria-label="<?= $escaper->escapeHtmlAttr(__('My cart')) ?>"
+                    :aria-label="cartAriaLabel"
+                >
+                    <?= $lucideIcons->renderHtml('shopping-cart', 'size-4', 16, 16, ['aria-hidden' => 'true']) ?>
+                    <span class="grid size-5 place-items-center rounded-full bg-primary text-[10px] font-extrabold text-primary-foreground"
+                          x-text="summaryCount"
+                          aria-hidden="true"
+                    >0</span>
+                <?php if ($showMiniCart): ?>
+                    </button>
+                <?php else: ?>
+                    </a>
+                <?php endif ?>
+
+                <button type="button"
+                        class="<?= $actionClass ?> inline-flex size-10 p-0 md:hidden"
+                        aria-label="<?= $escaper->escapeHtmlAttr(__('Toggle menu')) ?>"
+                        :aria-expanded="mobileOpen"
+                        @click="toggleMobile"
+                >
+                    <span x-show="!mobileOpen"><?= $lucideIcons->renderHtml('menu', 'size-5', 20, 20, ['aria-hidden' => 'true']) ?></span>
+                    <span x-show="mobileOpen" x-cloak><?= $lucideIcons->renderHtml('x', 'size-5', 20, 20, ['aria-hidden' => 'true']) ?></span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Desktop navigation -->
+        <nav class="relative hidden border-t border-border md:block"
+             aria-label="<?= $escaper->escapeHtmlAttr(__('Main navigation')) ?>"
+             @mouseleave="closeMenu"
+        >
+            <div class="container-site flex h-12 items-center gap-5 whitespace-nowrap text-sm font-semibold lg:gap-8">
+                <?php foreach (array_merge(['Products'], array_keys($specialtyMenus)) as $menuName): ?>
+                    <button type="button"
+                            class="<?= $navLinkClass ?>"
+                            data-menu="<?= $escaper->escapeHtmlAttr($menuName) ?>"
+                            :class="{ 'text-primary': isMenuOpen() }"
+                            :aria-expanded="isMenuOpen"
+                            @mouseenter="openMenu"
+                            @click="toggleMenu"
+                    >
+                        <?= $escaper->escapeHtml(__($menuName)) ?>
+                        <?= $lucideIcons->renderHtml('chevron-down', 'size-3 transition-transform', 12, 12, ['aria-hidden' => 'true', ':class' => "{ 'rotate-180': isMenuOpen() }"]) ?>
+                    </button>
+                <?php endforeach; ?>
+                <a href="<?= $escaper->escapeUrl($homeUrl) ?>" class="focus-ring flex items-center gap-1 rounded-sm hover:text-primary" @mouseenter="closeMenu"><?= $escaper->escapeHtml(__('Promotions')) ?></a>
+                <a href="<?= $escaper->escapeUrl($contactUrl) ?>" class="focus-ring flex items-center gap-1 rounded-sm hover:text-primary" @mouseenter="closeMenu"><?= $escaper->escapeHtml(__('Contact us')) ?></a>
+                <a href="<?= $escaper->escapeUrl($quoteUrl) ?>" class="focus-ring ml-auto rounded-sm text-primary" @mouseenter="closeMenu"><?= $escaper->escapeHtml(__('Request a quote')) ?></a>
+            </div>
+
+            <div class="absolute inset-x-0 top-full border-y border-border bg-card shadow-xl"
+                 data-menu="Products"
+                 x-show="isMenuOpen"
+                 x-cloak
+            >
+                <div class="container-site grid max-h-[65vh] grid-cols-3 gap-x-12 overflow-y-auto py-7">
+                    <?php foreach ($productGroups as $groupName => $items): ?>
+                        <section>
+                            <div class="flex items-center justify-between border-b border-border pb-2">
+                                <h2 class="text-sm font-extrabold uppercase text-foreground"><?= $escaper->escapeHtml(__($groupName)) ?></h2>
+                                <a href="<?= $escaper->escapeUrl($searchUrl($groupName)) ?>" class="text-[11px] font-bold text-primary hover:underline"><?= $escaper->escapeHtml(__('View all')) ?></a>
+                            </div>
+                            <ul class="mt-3 grid gap-1.5">
+                                <?php foreach ($items as $item): ?>
+                                    <li>
+                                        <a href="<?= $escaper->escapeUrl($searchUrl($item)) ?>"
+                                           class="block rounded-sm py-0.5 text-xs font-medium text-muted-foreground transition-colors hover:text-primary"
+                                        ><?= $escaper->escapeHtml(__($item)) ?></a>
+                                    </li>
+                                <?php endforeach; ?>
+                            </ul>
+                        </section>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+
+            <?php foreach ($specialtyMenus as $menuName => $items): ?>
+                <div class="absolute inset-x-0 top-full border-y border-border bg-card shadow-xl"
+                     data-menu="<?= $escaper->escapeHtmlAttr($menuName) ?>"
+                     x-show="isMenuOpen"
+                     x-cloak
+                >
+                    <div class="container-site py-7">
+                        <div class="flex items-end justify-between border-b border-border pb-3">
+                            <div>
+                                <p class="text-[10px] font-extrabold uppercase text-primary"><?= $escaper->escapeHtml(__('Shop by category')) ?></p>
+                                <h2 class="mt-1 text-xl font-extrabold"><?= $escaper->escapeHtml(__($menuName)) ?></h2>
+                            </div>
+                            <a href="<?= $escaper->escapeUrl($searchUrl($menuName)) ?>" class="text-xs font-bold text-primary hover:underline">
+                                <?= $escaper->escapeHtml(__('View all %1', __($menuName))) ?>
+                            </a>
+                        </div>
+                        <div class="grid grid-cols-3 gap-x-8 gap-y-1 pt-4 lg:grid-cols-4">
+                            <?php foreach ($items as $item): ?>
+                                <a href="<?= $escaper->escapeUrl($searchUrl($item)) ?>"
+                                   class="rounded-sm border-b border-border/70 py-2.5 text-xs font-semibold text-muted-foreground transition-colors hover:border-primary hover:text-primary"
+                                ><?= $escaper->escapeHtml(__($item)) ?></a>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </nav>
+
+        <!-- Mobile navigation -->
+        <nav class="max-h-[calc(100vh-7rem)] overflow-y-auto border-t border-border bg-card p-4 md:hidden"
+             aria-label="<?= $escaper->escapeHtmlAttr(__('Mobile navigation')) ?>"
+             x-show="mobileOpen"
+             x-cloak
+        >
+            <form action="<?= $escaper->escapeUrl($block->getUrl('catalogsearch/result')) ?>" method="get" role="search"
+                  class="mb-2 flex items-center rounded-full border border-input bg-surface-soft p-1"
+            >
+                <input type="search" name="q" required
+                       class="min-w-0 flex-1 border-0 bg-transparent px-4 py-1.5 text-sm shadow-none outline-hidden focus:ring-0"
+                       placeholder="<?= $escaper->escapeHtmlAttr(__('Search')) ?>"
+                       aria-label="<?= $escaper->escapeHtmlAttr(__('Search catalogue')) ?>"
+                />
+                <button type="submit" class="grid size-9 place-items-center rounded-full bg-primary text-primary-foreground"
+                        aria-label="<?= $escaper->escapeHtmlAttr(__('Search')) ?>"
+                ><?= $lucideIcons->renderHtml('search', 'size-4', 16, 16, ['aria-hidden' => 'true']) ?></button>
+            </form>
+
+            <div>
+                <button type="button"
+                        class="flex w-full items-center justify-between border-b border-border py-3 text-sm font-semibold"
+                        data-menu="Products"
+                        :aria-expanded="isMenuOpen"
+                        @click="toggleMenu"
+                >
+                    <?= $escaper->escapeHtml(__('Products')) ?>
+                    <?= $lucideIcons->renderHtml('chevron-down', 'size-4 transition-transform', 16, 16, ['aria-hidden' => 'true', ':class' => "{ 'rotate-180': isMenuOpen() }"]) ?>
+                </button>
+                <div class="max-h-72 overflow-y-auto border-b border-border bg-surface-soft px-3 py-2"
+                     data-menu="Products"
+                     x-show="isMenuOpen"
+                     x-cloak
+                >
+                    <?php foreach ($productGroups as $groupName => $items): ?>
+                        <div class="py-2">
+                            <a href="<?= $escaper->escapeUrl($searchUrl($groupName)) ?>" class="text-xs font-extrabold uppercase text-primary"><?= $escaper->escapeHtml(__($groupName)) ?></a>
+                            <div class="mt-1 grid gap-1">
+                                <?php foreach ($items as $item): ?>
+                                    <a href="<?= $escaper->escapeUrl($searchUrl($item)) ?>" class="py-1 text-xs text-muted-foreground"><?= $escaper->escapeHtml(__($item)) ?></a>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+
+            <?php foreach ($specialtyMenus as $menuName => $items): ?>
+                <div>
+                    <button type="button"
+                            class="flex w-full items-center justify-between border-b border-border py-3 text-sm font-semibold"
+                            data-menu="<?= $escaper->escapeHtmlAttr($menuName) ?>"
+                            :aria-expanded="isMenuOpen"
+                            @click="toggleMenu"
+                    >
+                        <?= $escaper->escapeHtml(__($menuName)) ?>
+                        <?= $lucideIcons->renderHtml('chevron-down', 'size-4 transition-transform', 16, 16, ['aria-hidden' => 'true', ':class' => "{ 'rotate-180': isMenuOpen() }"]) ?>
+                    </button>
+                    <div class="grid max-h-64 overflow-y-auto border-b border-border bg-surface-soft px-3 py-2"
+                         data-menu="<?= $escaper->escapeHtmlAttr($menuName) ?>"
+                         x-show="isMenuOpen"
+                         x-cloak
+                    >
+                        <?php foreach ($items as $item): ?>
+                            <a href="<?= $escaper->escapeUrl($searchUrl($item)) ?>" class="py-1.5 text-xs text-muted-foreground"><?= $escaper->escapeHtml(__($item)) ?></a>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+
+            <?php foreach ([
+                [__('Promotions'), $homeUrl],
+                [__('Contact us'), $contactUrl],
+                [__('Request a quote'), $quoteUrl],
+                [__('My account'), $accountUrl],
+            ] as [$label, $url]): ?>
+                <a href="<?= $escaper->escapeUrl($url) ?>" class="flex border-b border-border py-3 text-sm font-semibold"><?= $escaper->escapeHtml($label) ?></a>
+            <?php endforeach; ?>
+        </nav>
+    </div>
+
+    <!--Cart Drawer-->
+    <?= $block->getChildHtml('cart-drawer'); ?>
+
+    <!--Authentication Pop-Up-->
+    <?= $block->getChildHtml('authentication-popup'); ?>
+</div>

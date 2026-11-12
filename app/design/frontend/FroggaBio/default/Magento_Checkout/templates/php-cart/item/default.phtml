@@ -1,0 +1,147 @@
+<?php
+/**
+ * FroggaBio cart item row.
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\LucideIcons;
+use Hyva\Theme\ViewModel\ProductPage;
+use Hyva\Theme\ViewModel\ProductStockItem;
+use Magento\Checkout\Block\Cart\Item\Renderer;
+use Magento\Framework\Escaper;
+
+/** @var Renderer $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var ProductStockItem $stockItemViewModel */
+$stockItemViewModel = $viewModels->require(ProductStockItem::class);
+
+/** @var LucideIcons $lucideIcons */
+$lucideIcons = $viewModels->require(LucideIcons::class);
+
+/** @var ProductPage $productViewModel */
+$productViewModel = $viewModels->require(ProductPage::class);
+
+$item = $block->getItem();
+$product = $item->getProduct();
+
+$minSalesQty = $stockItemViewModel->getMinSaleQty($product);
+$maxSalesQty = $stockItemViewModel->getMaxSaleQty($product);
+$qty = $stockItemViewModel->isQtyDecimal($product) ? $block->getQty() : (int) $block->getQty();
+$step = $stockItemViewModel->getQtyIncrements($product) ?: null;
+
+if ($step) {
+    $minSalesQty = ceil($minSalesQty / $step) * $step;
+    $maxSalesQty = floor($maxSalesQty / $step) * $step;
+    $qty = ceil($qty / $step) * $step;
+}
+$maxSalesQtyLength = ($maxSalesQty ? strlen((string) $maxSalesQty) : 4)
+    + (int) $stockItemViewModel->isQtyDecimal($product);
+
+$details = [__('Cat # %1', $item->getSku())];
+foreach ($block->getOptionList() as $option) {
+    $formatted = $block->getFormatedOptionValue($option);
+    $details[] = strip_tags((string) ($formatted['full_view'] ?? $formatted['value']));
+}
+$discount = (float) $item->getDiscountAmount();
+$productName = $block->getProductName();
+?>
+<article class="cart item grid grid-cols-[4rem_1fr] items-center gap-4 border-b border-border p-5 last:border-0 sm:grid-cols-[4rem_1fr_8rem_7rem_2.5rem]"
+    <?php foreach ($block->getData('cart_item_data_attributes') ?? [] as $attribute => $include): ?>
+        <?php if ($include): ?>
+            <?= $escaper->escapeHtml(sprintf('data-%s', $attribute)); ?>="<?= $escaper->escapeHtmlAttr($item->getData($attribute)); ?>"
+        <?php endif; ?>
+    <?php endforeach; ?>
+>
+    <?php if ($block->hasProductUrl()): ?>
+        <a href="<?= $escaper->escapeUrl($block->getProductUrl()) ?>" tabindex="-1" class="product-item-photo block size-16 overflow-hidden rounded-md">
+    <?php else: ?>
+        <div class="product-item-photo size-16 overflow-hidden rounded-md">
+    <?php endif; ?>
+        <img src="<?= $escaper->escapeUrl($block->getImage($block->getProductForThumbnail(), 'cart_page_product_thumbnail')->getImageUrl()) ?>"
+             alt="<?= $escaper->escapeHtmlAttr($productName) ?>"
+             width="64"
+             height="64"
+             loading="lazy"
+             class="size-16 object-cover"
+        />
+    <?php if ($block->hasProductUrl()): ?>
+        </a>
+    <?php else: ?>
+        </div>
+    <?php endif; ?>
+
+    <div class="product-item-details min-w-0">
+        <p class="product-item-name text-sm font-extrabold">
+            <?php if ($block->hasProductUrl()): ?>
+                <a href="<?= $escaper->escapeUrl($block->getProductUrl()) ?>" class="hover:text-primary"><?= $escaper->escapeHtml($productName) ?></a>
+            <?php else: ?>
+                <?= $escaper->escapeHtml($productName) ?>
+            <?php endif; ?>
+        </p>
+        <p class="text-xs text-muted-foreground"><?= $escaper->escapeHtml(implode(' · ', array_map('strval', $details))) ?></p>
+        <?php if ($discount > 0): ?>
+            <p class="text-xs font-bold text-primary">
+                <?= $escaper->escapeHtml(__('Promotion applied · you save %1', strip_tags($productViewModel->format($discount, false)))) ?>
+            </p>
+        <?php endif; ?>
+        <p class="text-xs [&_.price]:font-normal">
+            <span class="sr-only"><?= $escaper->escapeHtml(__('Price')) ?></span>
+            <?= $block->getUnitPriceHtml($item) ?> <?= $escaper->escapeHtml(__('each')) ?>
+        </p>
+        <?php if ($messages = $block->getMessages()): ?>
+            <?php foreach ($messages as $message): ?>
+                <div class="cart item message mt-1 text-xs <?= $message['type'] === 'error' ? 'text-destructive' : 'text-muted-foreground' ?>">
+                    <?= $escaper->escapeHtml($message['text']) ?>
+                </div>
+            <?php endforeach; ?>
+        <?php endif; ?>
+        <?php if ($addInfoBlock = $block->getProductAdditionalInformationBlock()): ?>
+            <?= $addInfoBlock->setItem($item)->toHtml() ?>
+        <?php endif; ?>
+    </div>
+
+    <div class="col-start-2 flex w-fit items-center rounded-md border border-border sm:col-start-auto" x-data="initCartItemQty">
+        <button type="button" class="grid size-8 place-items-center" data-delta="-1" @click="changeQty"
+                aria-label="<?= $escaper->escapeHtmlAttr(__('Decrease quantity of %1', $productName)) ?>"
+        ><?= $lucideIcons->renderHtml('minus', 'size-3.5', 14, 14, ['aria-hidden' => 'true']) ?></button>
+        <label class="sr-only" for="cart-<?= (int) $item->getId() ?>-qty"><?= $escaper->escapeHtml(__('Qty')) ?></label>
+        <input
+            id="cart-<?= (int) $item->getId() ?>-qty"
+            name="cart[<?= $escaper->escapeHtmlAttr($item->getId()) ?>][qty]"
+            value="<?= $escaper->escapeHtmlAttr($qty) ?>"
+            class="qty w-8 appearance-none border-0 bg-transparent p-0 text-center text-sm font-bold shadow-none focus:ring-0 [&::-webkit-inner-spin-button]:appearance-none"
+            required
+            x-ref="qty"
+            @change="submitQty"
+            <?php if ($stockItemViewModel->isQtyDecimal($product)): ?>
+                type="text"
+                pattern="[0-9]+(\.[0-9]{1,<?= /** @noEscape */ $maxSalesQtyLength ?>})?"
+                inputmode="decimal"
+            <?php else: ?>
+                type="number"
+                pattern="[0-9]{0,<?= /** @noEscape */ $maxSalesQtyLength ?>}"
+                inputmode="numeric"
+                <?php if ($minSalesQty): ?>min="<?= /** @noEscape */ $minSalesQty ?>"<?php endif; ?>
+                <?php if ($maxSalesQty): ?>max="<?= /** @noEscape */ $maxSalesQty ?>"<?php endif; ?>
+                <?php if ($step): ?>step="<?= /** @noEscape */ $step ?>"<?php endif; ?>
+            <?php endif; ?>
+            data-role="cart-item-qty"
+        >
+        <button type="button" class="grid size-8 place-items-center" data-delta="1" @click="changeQty"
+                aria-label="<?= $escaper->escapeHtmlAttr(__('Increase quantity of %1', $productName)) ?>"
+        ><?= $lucideIcons->renderHtml('plus', 'size-3.5', 14, 14, ['aria-hidden' => 'true']) ?></button>
+    </div>
+
+    <p class="col-start-2 text-sm font-extrabold sm:col-start-auto sm:text-right">
+        <span class="sr-only"><?= $escaper->escapeHtml(__('Subtotal')) ?></span>
+        <?= $block->getRowTotalHtml($item) ?>
+    </p>
+
+    <div class="item-actions col-start-2 flex items-center sm:col-start-auto">
+        <?= /* @noEscape */ $block->getActions($item) ?>
+    </div>
+</article>

@@ -1,0 +1,20 @@
+<?php
+/**
+ * FroggaBio "Proceed to checkout" button.
+ */
+
+declare(strict_types=1);
+
+use Magento\Checkout\Block\Onepage\Link;
+use Magento\Framework\Escaper;
+
+/** @var Link $block */
+/** @var Escaper $escaper */
+?>
+<?php if ($block->isPossibleOnepageCheckout()): ?>
+    <a @click.prevent.stop="proceedToCheckout"
+       href="<?= $escaper->escapeUrl($block->getCheckoutUrl()) ?>"
+       class="btn-checkout mt-4 inline-flex h-11 w-full items-center justify-center rounded-md bg-primary px-5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-hover focus-ring"
+       id="checkout-link-button"
+    ><?= $escaper->escapeHtml(__('Proceed to checkout →')) ?></a>
+<?php endif ?>

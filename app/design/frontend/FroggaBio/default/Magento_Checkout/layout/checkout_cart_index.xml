@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <!-- php-cart/wrapper.phtml and php-cart/noItems.phtml render the "My Cart" heading -->
+        <referenceBlock name="page.main.title" remove="true"/>
+
+        <!-- Mockup shows "Calculated at checkout" instead of a shipping estimator -->
+        <referenceBlock name="checkout.cart.shipping" remove="true"/>
+
+        <!-- Order summary: totals, then promo code, then checkout button -->
+        <move element="cart.discount" destination="cart.summary" after="checkout.cart.totals.container"/>
+    </body>
+</page>
